@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Travail 1 – Mettre en place un script d’installation d’un site de base d’Apache
+# Travail 2 – Mettre en place un script d’installation d’un site supplémentaire
 
 # * Vérifier qu’Apache (et DNS)  n’est pas déjà installé
 # * Installer Apache en mode silencieux
@@ -26,7 +26,7 @@ else
 fi
 
 # Saisir l'adresse IP  
-read -p "Saisir l'adresse  IP (par exemple 192.168.1.0) : " IP
+read -p "Saisir l'adresse  IP (par exemple 192.168.27.135) : " IP
 
 # Verification de l'adresse IP 
 if [[ ! "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -88,6 +88,7 @@ cat <<EOF>> "/var/www/html/index.html"
 EOF
 
 # * Redémarrer Apache
+sudo systemctl restart apache2
 if systemctl is-active --quiet apache2; then
   echo "Apache est maintenant actif et fonctionne."
 else
