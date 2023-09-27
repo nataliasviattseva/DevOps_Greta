@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Travail 1 – Mettre en place un script d’installation d’un site de base d’Apache
+# Travail 2 – Mettre en place un script d’installation d’un site supplémentaire
 
 # * Vérifier qu’Apache (et DNS)  n’est pas déjà installé
 # * Installer Apache en mode silencieux
@@ -18,16 +18,30 @@ fi
 
 # Verifier si Apache2 est déjà installeé et actif
 if systemctl is-active --quiet apache2; then
-  echo "Le service Apace est déjà installé et actif."
+  echo "Le service Apache est déjà installé et actif."
 else 
   # Installer Apache2 et se outils
   echo "Installation de Apache et de ses outils..." 
   apt-get install apache2 -y
 fi
 
-# Saisir l'adresse IP et FQDN 
+# Saisir l'adresse IP  
 read -p "Saisir l'adresse  IP (par exemple 192.168.1.0) : " IP
+
+# Verification de l'adresse IP 
+if [[ ! "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Invalid IP address format. Please enter a valid IP address."
+  exit 1
+fi
+
+# Saisir FQDN 
 read -p "Saisir FQDN : " ServerName
+
+# Verification de FQDN 
+if [[ ! "$ServerName" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+  echo "Invalid FQDN. Please enter a valid Fully Qualified Domain Name."
+  exit 1
+fi
 
 # Verification et ecriture l'information dqns fichier hosts
 if [[ ! -z "$IP" && ! -z "$ServerName" ]]; then
@@ -53,8 +67,8 @@ APACHE_LOG_DIR="/var/log/apache2"
 cat <<EOF>> "/etc/apache2/sites-available/000-default.conf" 
 <VirtualHost *:80>
   ServerName $ServerName 
-  ServerAlias $SeverName
-  ServerAdmin email@$ServerAdmin
+  ServerAlias $ServerName
+  ServerAdmin admin@$ServerName
   DocumentRoot /var/www/html 
   ErrorLog ${APACHE_LOG_DIR}/error.log 
   CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -79,5 +93,4 @@ if systemctl is-active --quiet apache2; then
 else
   echo "L'installation d'Apache a peut-être rencontré des problèmes."
 fi
-
 # * Vérifier le fonctionnement
