@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Travail 2 – Mettre en place un script d’installation d’un site supplémentaire
+# Travail 1 – Mettre en place un script d’installation d’un site de base d’Apache
 
 # * Vérifier qu’Apache (et DNS)  n’est pas déjà installé
 # * Installer Apache en mode silencieux
