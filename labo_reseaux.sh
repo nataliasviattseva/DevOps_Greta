@@ -67,11 +67,55 @@ do
 
     "Gestion des IP")
       clear
-      # Ajoutez le code pour l'option "Gestion des IP" ici
+      ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {print $2" "$4}'
+      echo
+      while [ "$answer" != "n" ]; do
+        read -p "Voulez-vous ajouter (a) ou supprimer (s) l'adress IP ? " as
+        if [[ "$as" =~ "a" ]]; then 
+          read -p "Saisir l'IP pour ajouter: " IP_READ
+          read -p "Saisir le nom de reseau pour $IP_READ : " RES_READ
+          sudo ip addr add $IP_READ dev $RES_READ
+          echo "L'adresse IP $IP_READ est ajouté" 
+        elif [[ "$as" =~ "s" ]]; then 
+          read -p "Saisir l'IP pour supprimer: " IP_READ
+          read -p "Saisir le nom de reseau pour $IP_READ : " RES_READ
+          sudo ip addr del $IP_READ dev $RES_READ
+          echo "L'adresse IP $IP_READ est supprimé"
+        fi
+        read -p "Voulez-vous continuer ? (y/n) " answer
+        answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
+      done
       ;;
 
     "Gestion Profil")
-      # Ajoutez le code pour l'option "Gestion Profil" ici
+      clear
+      nmcli connection show
+      echo
+      while [ "$answer" != "n" ]; do
+        read -p "Voulez-vous ajouter (a) ou supprimer (s) le profile ? " as
+        if [[ "$as" =~ "a" ]]; then 
+          read -p "Saisir le con-name : " CON_NAME
+          read -p "Saisir le ifname : " IFNAME
+          sudo nmcli connection add con-name $CON_NAME type ethernet ifname $IFNAME
+          #nmcli c add type ethernet ifname ns1 con-name "My Connection"
+          read -p "Saisir l'IPv4 pour ajouter dans le profil $CON_NAME (exemple 192.168.1.100/24) : " IP_PROFIL
+          read -p "Saisir le gateaway pour ajouter dans le profil $CON_NAME (exemple 192.168.1.1) : " GA_PROFIL
+          sudo nmcli connection modify $CON_NAME ipv4.method manual ipv4.address $IP_PROFIL ipv4.gateway $GA_PROFIL ipv4.dns 8.8.8.8,8.8.4.4
+
+
+#          echo "Le profil est ajouté" 
+#        elif [[ "$as" =~ "s" ]]; then 
+#          read -p "Saisir l'IP pour supprimer: " IP_READ
+#          read -p "Saisir le nom de reseau pour $IP_READ : " RES_READ
+#          sudo ip addr del $IP_READ dev $RES_READ
+#          echo "L'adresse IP $IP_READ est supprimé"
+#        fi
+#        read -p "Voulez-vous continuer ? (y/n) " answer
+#        answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
+      done
+      
+
+
       ;;
     "Scan IP")
       # Ajoutez le code pour l'option "Scan IP" ici
