@@ -1,27 +1,40 @@
 #!/bin/bash
+
+reseau="192.168.27.0/24"
+
+verifier_nmap(){
+  if ! command -v nmap &>/dev/null; then
+    echo "Nmap n'est pas installé, installation en cours..."
+    sudo apt-get install nmap || {
+      echo "Échec de l'installation de Nmap. Veuillez l'installer manuellement et relancer le script."
+      exit 1
+    }
+  fi
+}
+
 clear
 
-echo "Saisir votre choix :"
+echo "Sélectionnez une option : "
 
-options=("Infos"
-         "Convertir IP"
-         "Gestion des IP"
-         "Gestion Profil"
-         "Scan IP"
-         "Scan HTTP(s)"
-         "Scan DHCP"
-         "Scan CVE"
-         "Infos wan"
-         "FIN")
+options=("Afficher les informations réseau"
+         "Convertir une adresse IP"
+         "Gérer les adresses IP"
+         "Gestion les profils réseau"
+         "Scanner les adresses IP"
+         "Scaner les ports HTTP(s)"
+         "Scaner le serveur DHCP"
+         "Scanner les CVE"
+         "Afficher les informations WAN"
+         "Quitter")
 
 select opt in "${options[@]}"
 do
   case $opt in
-    "Infos")
+    "Afficher les informations réseau")
       clear
       echo "Affichage des paramètres réseau : "
 #      echo "Noms des cartes réseau : " `ip a | grep UP | cut -d " " -f 2 | cut -d ":" -f 1`
-      echo "Noms des cartes réseau : " 
+      echo "Noms des interfaces réseau : " 
       ls /sys/class/net
       echo "Liste des adresses IPvK4 : " 
       ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {print $2" "$4}'
@@ -31,13 +44,13 @@ do
       cat /etc/resolv.conf | grep 'nameserver' | awk '{print $2}'
       echo "Affichage adresse du serveur DHCP :" 
       cat /var/lib/dhcp/dhclient.leases | grep 'dhcp-server-identifier' | tail -n 1 | awk '{print $3}'
-      echo "Affichage adresse MAC de la carte réseau : " 
+      echo "Affichage adresse MAC de l'interface réseau : " 
       ip link | awk '/link\/ether/ {print $2}'
       echo "Affichage table de routage : " 
       ip route
       ;;
 
-    "Convertir IP")
+    "Convertir une adresse IP")
       clear
       function convip()
       {
@@ -65,66 +78,92 @@ do
       printf "Votre réseau est le %d.%d.%d.%d\n" "$((i1 & m1))" "$((i2 & m2))" "$((i3 & m3))" "$((i4 & m4))"
       ;;
 
-    "Gestion des IP")
+    "Gérer les adresses IP")
       clear
       ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {print $2" "$4}'
       echo
       while [ "$answer" != "n" ]; do
         read -p "Voulez-vous ajouter (a) ou supprimer (s) l'adress IP ? " as
         if [[ "$as" =~ "a" ]]; then 
-          read -p "Saisir l'IP pour ajouter: " IP_READ
-          read -p "Saisir le nom de reseau pour $IP_READ : " RES_READ
-          sudo ip addr add $IP_READ dev $RES_READ
-          echo "L'adresse IP $IP_READ est ajouté" 
+          read -p "Saisir l'adresse IP à ajouter: " IP_READ
+          read -p "Saisir le nom de l'interface pour $IP_READ : " RES_READ
+          sudo ip addr add "$IP_READ" dev "$RES_READ"
+          echo "L'adresse IP $IP_READ est ajoutée" 
         elif [[ "$as" =~ "s" ]]; then 
-          read -p "Saisir l'IP pour supprimer: " IP_READ
-          read -p "Saisir le nom de reseau pour $IP_READ : " RES_READ
-          sudo ip addr del $IP_READ dev $RES_READ
-          echo "L'adresse IP $IP_READ est supprimé"
+          read -p "Saisir l'adresse IP à supprimer: " IP_READ
+          read -p "Saisir le nom de l'interface pour $IP_READ : " RES_READ
+          sudo ip addr del "$IP_READ" dev "$RES_READ"
+          echo "L'adresse IP $IP_READ est supprimée"
         fi
-        read -p "Voulez-vous continuer ? (y/n) " answer
+        read -p "Voulez-vous continuer ? (o/n) " answer
         answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
       done
       ;;
 
-    "Gestion Profil")
+    "Gérer les profils réseau")
       clear
       nmcli connection show
       echo
       while [ "$answer" != "n" ]; do
-        read -p "Voulez-vous ajouter (a) ou supprimer (s) le profile ? " as
+        read -p "Voulez-vous ajouter (a) ou supprimer (s) un profil réseau ? " as
         if [[ "$as" =~ "a" ]]; then 
-          read -p "Saisir le con-name : " CON_NAME
-          read -p "Saisir le ifname : " IFNAME
-          sudo nmcli connection add con-name $CON_NAME type ethernet ifname $IFNAME
-          read -p "Saisir l'IPv4 pour ajouter dans le profil $CON_NAME (exemple 192.168.1.100/24) : " IP_PROFIL
-          read -p "Saisir le gateaway pour ajouter dans le profil $CON_NAME (exemple 192.168.1.1) : " GA_PROFIL
-          sudo nmcli connection modify $CON_NAME ipv4.method manual ipv4.address $IP_PROFIL ipv4.gateway $GA_PROFIL ipv4.dns 8.8.8.8,8.8.4.4
+          read -p "Saisir le nom de la connexion : " CON_NAME
+          read -p "Saisir le nom de l'interface : " IFNAME
+          sudo nmcli connection add con-name "$CON_NAME" type ethernet ifname "$IFNAME"
+          read -p "Saisir l'adresse IPv4 à ajouter au le profil $CON_NAME (exemple 192.168.1.100/24) : " IP_PROFIL
+          read -p "Saisir le passerelle à ajouter au le profil $CON_NAME (exemple 192.168.1.1) : " GA_PROFIL
+          sudo nmcli connection modify "$CON_NAME" ipv4.method manual ipv4.address "$IP_PROFIL" ipv4.gateway "$GA_PROFIL" ipv4.dns 8.8.8.8,8.8.4.4
         elif [[ "$as" =~ "s" ]]; then 
-          read -p "Saisir le con-name : " CON_NAME
-          read -p "Saisir le ifname : " IFNAME
-          sudo nmcli connection delete $CON_NAME
-        read -p "Voulez-vous continuer ? (y/n) " answer
+          read -p "Saisir le nom de la connexion à supprimer : " CON_NAME
+          sudo nmcli connection delete "$CON_NAME"
+        fi
+        read -p "Voulez-vous continuer ? (o/n) " answer
         answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
       done
       ;;
 
-    "Scan IP")
-      # Ajoutez le code pour l'option "Scan IP" ici
+    "Scanner les adresses IP")
+      clear
+      verifier_nmap
+      echo "Balayage du réseau en cours..." 
+      nmap -sn "$reseau" --script broadcast-dhcp-discover  
       ;;
-    "Scan HTTP(s)")
-      # Ajoutez le code pour l'option "Scan HTTP(s)" ici
+
+    "Scanner les ports HTTP(s)")
+      clear
+      verifier_nmap
+      echo "Balayage des ports HTTS(s) en cours..." 
+      nmap -p 80,443 "$network" | grep host 
       ;;
-    "Scan DHCP")
-      # Ajoutez le code pour l'option "Scan DHCP" ici
+
+    "Scanner le serveur DHCP")
+      clear
+      check_nmap
+      nmcli connection show
+      reap -p "Saisir le nom de la connexition" CON_NAME
+      sudo nmap --script broadcast-dhcp-discover -e "$CON_NAME"
       ;;
-    "Scan CVE")
-      # Ajoutez le code pour l'option "Scan CVE" ici
+
+    "Scanner les CVE")
+      clear
+      check_nmap
+      echo "Balayage des vulnérabilités de resea $network en cours..." 
+      nmap -Pn --script vuln "$network"
       ;;
-    "Infos wan")
-      # Ajoutez le code pour l'option "Infos wan" ici
+
+    "Afficher les informations WAN")
+      # Adresse du site que vous souhaitez interroger
+      site="debian.org"
+
+      # Utilisation de la commande dig pour récupérer les informations DNS
+      result=$(dig "$site")
+
+      # Affichage des résultats
+      echo "Résultats DNS pour le site $site :"
+      echo "$result"
       ;;
-    "FIN")
+
+    "Quitter")
       echo "Fin du programme."
       break
       ;;
