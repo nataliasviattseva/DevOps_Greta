@@ -157,7 +157,7 @@ do
 
       # Affichage des résultats
       echo "Résultats DNS pour le site $site..."
-      echo `(dig "$site")`
+      dig "$site"
       ;;
 
     "Quitter")
