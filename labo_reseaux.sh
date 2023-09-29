@@ -83,7 +83,8 @@ do
       ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {print $2" "$4}'
       echo
       while [ "$answer" != "n" ]; do
-        read -p "Voulez-vous ajouter (a) ou supprimer (s) l'adress IP ? " as
+        echo "Voulez-vous ajouter ou supprimer l'adresse IP ? "
+        read -p "(Tappez 'a' pour ajouter ou 's' pour supprimer " as
         if [[ "$as" =~ "a" ]]; then 
           read -p "Saisissez l'adresse IP à ajouter: " IP_READ
           read -p "Saisissez le nom de l'interface pour $IP_READ : " RES_READ
@@ -100,12 +101,13 @@ do
       done
       ;;
 
-    "Gérer les profils réseau")
+    "Gestion les profils réseau")
       clear
       nmcli connection show
       echo
       while [ "$answer" != "n" ]; do
-        read -p "Voulez-vous ajouter (a) ou supprimer (s) un profil réseau ? " as
+        echo "Voulez-vous ajouter ou supprimer un profil réseau ? "
+        read -p "(Tappez 'a' pour ajouter ou 's' pour supprimer " as
         if [[ "$as" =~ "a" ]]; then 
           read -p "Saisissez le nom de la connexion : " CON_NAME
           read -p "Saisissez le nom de l'interface : " IFNAME
