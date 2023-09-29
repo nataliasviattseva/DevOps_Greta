@@ -85,13 +85,13 @@ do
       while [ "$answer" != "n" ]; do
         read -p "Voulez-vous ajouter (a) ou supprimer (s) l'adress IP ? " as
         if [[ "$as" =~ "a" ]]; then 
-          read -p "Saisir l'adresse IP à ajouter: " IP_READ
-          read -p "Saisir le nom de l'interface pour $IP_READ : " RES_READ
+          read -p "Saisissez l'adresse IP à ajouter: " IP_READ
+          read -p "Saisissez le nom de l'interface pour $IP_READ : " RES_READ
           sudo ip addr add "$IP_READ" dev "$RES_READ"
           echo "L'adresse IP $IP_READ est ajoutée" 
         elif [[ "$as" =~ "s" ]]; then 
-          read -p "Saisir l'adresse IP à supprimer: " IP_READ
-          read -p "Saisir le nom de l'interface pour $IP_READ : " RES_READ
+          read -p "Saisissez l'adresse IP à supprimer: " IP_READ
+          read -p "Saisissez le nom de l'interface pour $IP_READ : " RES_READ
           sudo ip addr del "$IP_READ" dev "$RES_READ"
           echo "L'adresse IP $IP_READ est supprimée"
         fi
@@ -107,14 +107,14 @@ do
       while [ "$answer" != "n" ]; do
         read -p "Voulez-vous ajouter (a) ou supprimer (s) un profil réseau ? " as
         if [[ "$as" =~ "a" ]]; then 
-          read -p "Saisir le nom de la connexion : " CON_NAME
-          read -p "Saisir le nom de l'interface : " IFNAME
+          read -p "Saisissez le nom de la connexion : " CON_NAME
+          read -p "Saisissez le nom de l'interface : " IFNAME
           sudo nmcli connection add con-name "$CON_NAME" type ethernet ifname "$IFNAME"
-          read -p "Saisir l'adresse IPv4 à ajouter au le profil $CON_NAME (exemple 192.168.1.100/24) : " IP_PROFIL
-          read -p "Saisir le passerelle à ajouter au le profil $CON_NAME (exemple 192.168.1.1) : " GA_PROFIL
+          read -p "Saisissez l'adresse IPv4 à ajouter au le profil $CON_NAME (exemple 192.168.1.100/24) : " IP_PROFIL
+          read -p "Saisissez le passerelle à ajouter au le profil $CON_NAME (exemple 192.168.1.1) : " GA_PROFIL
           sudo nmcli connection modify "$CON_NAME" ipv4.method manual ipv4.address "$IP_PROFIL" ipv4.gateway "$GA_PROFIL" ipv4.dns 8.8.8.8,8.8.4.4
         elif [[ "$as" =~ "s" ]]; then 
-          read -p "Saisir le nom de la connexion à supprimer : " CON_NAME
+          read -p "Saisissez le nom de la connexion à supprimer : " CON_NAME
           sudo nmcli connection delete "$CON_NAME"
         fi
         read -p "Voulez-vous continuer ? (o/n) " answer
@@ -140,7 +140,7 @@ do
       clear
       check_nmap
       nmcli connection show
-      reap -p "Saisir le nom de la connexition" CON_NAME
+      read -p "Saisissez le nom de la connexition" CON_NAME
       sudo nmap --script broadcast-dhcp-discover -e "$CON_NAME"
       ;;
 
@@ -152,21 +152,19 @@ do
       ;;
 
     "Afficher les informations WAN")
-      # Adresse du site que vous souhaitez interroger
-      site="debian.org"
 
-      # Utilisation de la commande dig pour récupérer les informations DNS
-      result=$(dig "$site")
+      read -p "Saisissez l'adresse du site que vous souhaitez interroger : " site
 
       # Affichage des résultats
-      echo "Résultats DNS pour le site $site :"
-      echo "$result"
+      echo "Résultats DNS pour le site $site..."
+      echo `(dig "$site")`
       ;;
 
     "Quitter")
       echo "Fin du programme."
       break
       ;;
+
     *)
       echo "Choix invalide, veuillez réessayer."
       ;;
