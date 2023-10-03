@@ -2,13 +2,6 @@
 
 PS3="Action : (1-INFO_User) (2-PASS_User) (3-ADD_User) (4-DEL_User) (5-DELDATA_User) (6-END) "
 
-#options=("INFO_User"
-#         "PASS_User"
-#         "ADD_User"
-#         "DEL_User"
-#         "DELDATA_User"
-#         "END")
-
 select reponse in INFO_User PASS_User ADD_User DEL_User DELDATA_User END
 do
 case $reponse in  
@@ -38,7 +31,9 @@ echo "Option 3: ADD_User selected"
 PS3="CHOIX: (1-UNIQUE) (2-PAR_LOT) (3-END) "
 select rep in UNIQUE PAR_LOT END
 do
+
 case $rep in  
+
 UNIQUE)
 
 ;;
@@ -81,6 +76,16 @@ done
 DEL_User)
 clear
 echo "Option 4: DEL_User selected"
+
+read -p "Saisissez npm d'utilisateur à supprimer : " del_user
+sudo userdel "$del_user"
+dir_name=`cat /etc/passwd | grep deluser | cut -d":" -f6`
+rm -r "$dir_name"
+
+echo "Utilisateurs : "
+cut -d: -f1 /etc/passwd
+
+
 ;;
 
 DATA_User)
