@@ -1,0 +1,6 @@
+user;password;home_dir;group;shell
+user1;pw1;/opt/home_user1;group1;/bin/bash
+user2;pw2;/opt/home_user2;group2;/bin
+user3;pw3;/opt/home_user3;group1;/etc
+user4;pw4;/opt/home_user4;group2;/opt
+user5;pw5;/opt/home_user5;group1;/var
