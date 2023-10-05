@@ -1,5 +1,3 @@
-# TO DO
-
 #!/bin/bash
 
 PS3="
@@ -32,9 +30,11 @@ select reponse in Find_FIC Del_DIR Del_FIC Copy_DIR SAVE END;do
       clear
       echo "Choix 2 – Supprimer un répertoire"
       read -p "Saisissez le nom du répertoire à supprimer : " dossier
-
+      echo "Voulez-vous vraiment supprimer le repertoire $dossier et ce contenu ? "
+      sudo rm -r "$dossier"
       # to skip 'permitions denied'
-      find / -name foo 2>/dev/null
+      # find / -name foo 2>/dev/null
+      echo "Doddier $fichier a été supprimé"
       ;;
 
     Del_FIC)
@@ -43,7 +43,11 @@ select reponse in Find_FIC Del_DIR Del_FIC Copy_DIR SAVE END;do
       # On recherche les fichiers et on les supprime
       # on demande une confirmation avant
       clear
-
+      read -p "Saisissez le nom du fichier à supprimer : " fichier
+      find / -name foo 2>/dev/null
+      echo "Voulez-vous vraiment supprimer le repertoire $dossier et ce contenu ? "
+      sudo rm -r "$dossier"
+      echo "Fichier $fichier a été supprimé"
       ;;
 
     Copy_DIR)
@@ -51,13 +55,18 @@ select reponse in Find_FIC Del_DIR Del_FIC Copy_DIR SAVE END;do
       # Résultat attendu
       # On peut copier un répertoire et son contenu dans un autre répertoire
       clear
-
+      read -p  "Saisissez le repertoire à copier : " copier
+      read -p "Saisissez l'endroit pour copier le repertoire : " coller
+      cp $copier $coller
       ;;
 
     SAVE)
       # Choix 5 – Archiver des données
       # Résultat attendu
       # L’archive est créée et porte le nom de la machine et la date du jour
+      read -p "Saisissez le fichier à archiver : " archive
+      nom=find
+      tar -cvf $(nom).tar archive 
       clear
 
       ;;
