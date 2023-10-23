@@ -1,0 +1,36 @@
+#bin/bash
+clear
+echo ----------------------------------------------------------------------------------------------------------------
+echo -e "\e[1mVersion de Docker\e[0m"
+docker -v
+echo ----------------------------------------------------------------------------------------------------------------
+echo -n -e "\e[1mListe"&& docker info |grep Images
+echo -e -n "\e[0m"
+docker images
+echo ----------------------------------------------------------------------------------------------------------------
+echo -e "\e[1mListe des réseaux\e[0m"
+docker network ls
+echo ----------------------------------------------------------------------------------------------------------------
+echo -n -e "\e[1mListe des"&& docker info |grep Containers
+echo -e -n "\e[0m"
+docker ps -a
+echo ----------------------------------------------------------------------------------------------------------------
+echo -n -e "\e[1mConteneurs"&&docker info |grep Running
+echo -e -n "\e[0m"
+docker ps
+echo -e "\e[97m"
+docker ps | cut -d" " -f1 >ps.txt
+vol=$(docker volume ls |head -n10 |tail -n1 |awk 'FS=" " {print $2}' >vol.txt)
+while read ligne
+do
+  name=$(docker inspect $ligne |grep Name |head -n1|cut -d":" -f2)
+  ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $ligne)
+  echo -e -n "\e[0m"
+  echo -e "\e[1mAdresse IP des conteneurs\e[0m"
+  echo $name $ip
+  echo ----------------------------------------------------------------------------------------------------------------
+done < ps.txt
+echo -e "\e[1mListe des volumes\e[0m"
+cat vol.txt
+rm ps.txt && rm vol.txt
+echo
