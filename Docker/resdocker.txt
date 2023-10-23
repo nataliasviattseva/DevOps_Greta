@@ -1,0 +1,18 @@
+clear
+echo ----------------------------------------------------------------------------
+echo -e "\e[1mNom des cartes réseau\e[0m"
+nmcli connection show
+echo ----------------------------------------------------------------------------
+echo -e "\e[1mListe des adresses IPV4\e[0m"
+ip addr show |grep -w inet |grep -v 127.0.0.1|awk '{ print $2}'
+echo ----------------------------------------------------------------------------
+echo -e "\e[1mListe des adresses IPv6\e[0m"
+ip addr show |grep -w inet6 |grep -v ::1|awk '{ print $2}'| cut -d "/" -f 1
+echo ----------------------------------------------------------------------------
+echo -e "\e[1mListe des serveurs DNS\e[0m"
+cat /etc/resolv.conf |sed '1,2d' |awk '{print $2}'
+echo ----------------------------------------------------------------------------
+echo -e "\e[1mTable de routage\e[0m"
+netstat -r |sed '1,2d' |awk '{ print $1,$2}'
+echo ----------------------------------------------------------------------------
+echo 
