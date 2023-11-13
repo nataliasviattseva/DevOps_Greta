@@ -111,13 +111,13 @@ def adresse_ip6(ip):
 
 def genere():
     """Permet de générer le fichier ‘F_IPV6.txt’"""
-    with open("F_IPV4.txt") as file:
-        my_list = file.read().split()
-    with open("F_IPV6.txt", "w") as file:
+    with open("F_IPV4.txt") as file_ipv4:
+        my_list = file_ipv4.read().split()
+    with open("F_IPV6.txt", "w") as file_ipv6:
         for ip in my_list:
             if est_valide(ip):
                 # 'ffff' is 6to4 notation (https://en.wikipedia.org/wiki/6to4)
-                file.write(adresse_ip6(ip).replace("::", "::ffff:") + "\n")
+                file_ipv6.write(adresse_ip6(ip).replace("::", "::ffff:") + "\n")
 
 
 genere()
