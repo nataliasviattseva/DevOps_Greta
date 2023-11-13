@@ -17,6 +17,8 @@
 #
 # · La fonction hex(nb) permet de convertir un nombre décimal en hexadécimal (hex(155) à 0x9b)
 
+# Generate Random IPs: https://www.browserling.com/tools/random-ip
+
 import re
 from ipaddress import IPv6Address, ip_address
 # import netaddr # not implemented in method adresse_ip6()
