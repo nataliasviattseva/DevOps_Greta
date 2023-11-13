@@ -112,7 +112,7 @@ def adresse_ip6(ip):
 def genere():
     """Permet de générer le fichier ‘F_IPV6.txt’"""
     with open("F_IPV4.txt") as file:
-        my_list = file.read().split("\n")
+        my_list = file.read().split()
     with open("F_IPV6.txt", "w") as file:
         for ip in my_list:
             if est_valide(ip):
