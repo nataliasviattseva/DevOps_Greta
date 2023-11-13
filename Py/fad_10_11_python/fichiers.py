@@ -22,8 +22,8 @@ from ipaddress import IPv6Address, ip_address
 # import netaddr # not implemented in method adresse_ip6()
 
 # not used
-# To test ip address via ipaddress.ip_address method
-# Could be uses for IPv4 and IPv6 addresses
+# To test IP address via ipaddress.ip_address method
+# Could be used for IPv4 and IPv6 addresses
 def validate_ip_address(ip_string):
     try:
         ip_object = ip_address(ip_string)
@@ -50,10 +50,10 @@ def est_valide(ip):
     # Not covered - it's necessary to check classes
 
     # Any address that begins with a number between 224 and 239 is reserved for multicast,
-    # and probably invalid.
+    # and is probably invalid.
     # Not covered - it's necessary to check classes
 
-    # Any address that begins with one of the following, is private, and invalid in the public Internet,
+    # Any address that begins with one of the following is private and invalid on the public Internet,
     # but you will frequently see them used for internal networks (Note: the *s mean “anything between 0 & 255”) :
     # 10.*.*.*
     # 172.16.*.* through 172.31.*.*
@@ -114,7 +114,7 @@ def genere():
     with open("F_IPV6.txt", "w") as file:
         for ip in my_list:
             if est_valide(ip):
-                # ffff - is 6to4 notation (https://en.wikipedia.org/wiki/6to4)
+                # 'ffff' is 6to4 notation (https://en.wikipedia.org/wiki/6to4)
                 file.write(adresse_ip6(ip).replace("::", "::ffff:") + "\n")
 
 
