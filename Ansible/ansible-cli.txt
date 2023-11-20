@@ -1,0 +1,70 @@
+%title: ANSIBLE
+%author: pmerle
+
+
+# ANSIBLE : commande ansible CLI
+
+
+* peu utilisé (en proportion) au profit de ansible-playbook
+
+* permettre du test (ping, inventaire)
+
+* permet de jouer des tâches
+
+* beaucoup d'options similaires à la commande ansible-playbook
+
+* test de connexions 
+
+```
+ansible -i "node2," all -u vagrant -m ping
+```
+
+* principales options à connaître :
+		* -u : user distant utilisé
+		* -b : passer les commandes en élévation de privilèges (sudo)
+		* -k ou --ask-pass  > password SSH
+		* -K ou --ask-become-pass > password pour élévation privilèges
+		* -C ou --check : faire un dry run
+		* -D ou --diff : avoir un output de la diff
+		* --key-file : lien direct vers la clef privée
+		* -e ou --extra-vars : définir des variables
+		* --ask-vault-pass : déchiffrer un secret vault
+		* --vault-password-file : fichier pour déchiffrer
+		* -f x ou --forks : paralléliser
+		* -vvv : verbose
+
+
+---------------------------------------------------------------------------------------------------------------
+
+# ANSIBLE : commande ansible CLI
+
+
+* définir des paramètres ssh
+
+```
+ansible -i "node2," all -u vagrant -k --ssh-extra-args="-o 'PreferredAuthentications=password'" -m ping
+```
+
+* sshpass pour passer un password
+
+```
+sshpass -p 'vagrant' ansible -i "node2," all -u vagrant -k --ssh-extra-args="-o 'PreferredAuthentications=password'" -m ping
+```
+
+* affichage oneline
+
+```
+ansible -i "node2," all -u vagrant -m ping --one-line
+```
+
+* module command
+
+```
+ansible -i "node2," all -u vagrant -m command -a uptime
+```
+
+* passage d'une variable
+
+```
+ansible -i "node2," all -b -e "var1=pmerle" -m debug -a 'msg={{ var1 }}'
+```
