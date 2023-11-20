@@ -5,8 +5,6 @@
 # ANSIBLE : Installations
 
 
-<br>
-
 * Controller node : 
 		* Python >= 2.7
 		* tout sauf windows
@@ -16,8 +14,6 @@
 		* Python >= 2.6
 
 Documentation : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
-
-<br>
 
 * Différents types d'installations :
 		* paquets des distributions
@@ -34,9 +30,6 @@ https://releases.ansible.com/ansible/
 # ANSIBLE : Installations
 
 
-
-<br>
-
 * via le binaire :
 
 ```
@@ -50,8 +43,6 @@ export ANSIBLE_INVENTORY=~/ansible_hosts
 ansible all -m ping --ask-pass
 ```
 
-<br>
-
 * via pip :
 
 ```
@@ -59,22 +50,16 @@ sudo apt install python3-pip
 pip3 install ansible
 ```
 
-<br>
-
 * via les paquets des distributions (debian)
 
 ```
 sudo apt install ansible
 ```
 
-
 --------------------------------------------------------------------------------------------------------
 
 # ANSIBLE : Installations
 
-
-
-<br>
 
 * remarque macOS : 
 		* remonter la limite du nombre de fichiers
@@ -83,8 +68,6 @@ sudo apt install ansible
 ```
 sudo launchctl limit maxfiles unlimited
 ```
-
-<br>
 
 * remarque python interpreter - par défaut /usr/bin/python
 
