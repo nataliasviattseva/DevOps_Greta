@@ -12,7 +12,7 @@ serveur_debian_test:
     node2:
       ansible_connection: docker
       ansible_user: root
-    node2:
+    node3:
       ansible_connection: docker
       ansible_user: root
 
