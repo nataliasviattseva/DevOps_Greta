@@ -1,3 +1,5 @@
+Video : https://www.youtube.com/watch?v=kzmvwc2q_z0&list=PLn6POgpklwWoCpLKOSw3mXCqbRocnhrh-&index=1&t=30s&ab_channel=xavki
+
 Tutoriels ansible : https://gitlab.com/xavki/presentation-ansible-fr
 
 https://github.com/priximmo/sommaire-xavki-devops-fr
