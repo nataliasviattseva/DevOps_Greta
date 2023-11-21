@@ -1,0 +1,3 @@
+Tutoriels ansible : https://gitlab.com/xavki/presentation-ansible-fr
+
+https://github.com/priximmo/sommaire-xavki-devops-fr
