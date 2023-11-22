@@ -1,0 +1,35 @@
+- name: mon playbook
+  hosts: all
+  tasks:
+
+  - name: génération de la clef
+    openssh_keypair:
+      path: /tmp/nsv
+      type: rsa
+      size: 4096
+      state: present 
+      force: no
+    delegate_to: localhost
+    run_once: yes
+
+  - name: création du user devops
+    user:
+      name: devops
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "{{ 'password' | password_hash('sha512')}}"
+    become: yes
+
+  -name: add devops user to the sudoers
+   copy:
+     dest: "/etc/sudoers.d/devops"
+     content: "devops ALL=(ALL) NOPASSWD: ALL"
+   become: yes
+
+  -name: deploy ssh key
+   authorized_key: 
+     user: devops
+     key: "{{ lookup('file', '/tmp/nsv.pub') }}"
+     state: present
+   become: yes
