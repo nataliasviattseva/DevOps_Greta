@@ -1,0 +1,84 @@
+%title: ANSIBLE
+%author: pmerle
+
+
+# ANSIBLE : LES ROLES
+
+
+Documentation : https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
+
+
+C'EST QUOI ?
+
+	* des actions ayant un objectif commun
+
+	* les fichiers liés : templates, files...
+
+	* des variables : par défaut ou pas
+
+
+INTERETS :
+
+	* élément de partage > approche générale (même si on ne le fera pas)
+
+	* partage > dépôt pour chaque rôle
+
+	* principe du lego > plus il est petit et plus il est réutilisable
+
+	* pas de règles sur la granularité
+
+	* ex :
+			* un moteur de BDD
+			* la réplication
+			* le système de backup
+
+	* avoir des dépôts similaires pour s'y retrouver !!!!
+
+
+ORGANISATION DE TRAVAIL :
+
+	* un dépôt par rôle
+
+	* maintener (approbation des PR)
+
+	* tests des rôles
+
+	* prise en compte des impacts globals (ex : changement de variables etc).
+
+------------------------------------------------------------------------------------------------
+
+# ANSIBLE : LES ROLES
+
+
+STRUCTURE :
+
+* arborescence de répertoires et fichiers yaml
+
+		* tasks : les actions et le point d'entrée
+
+		* defaults : les variables par défaut
+
+		* vars : les variables de rôle
+
+		* handlers : les déclencheurs
+
+		* templates : les fichiers jinja
+
+		* files : les fichiers à copier ou fichiers statiques
+
+		* meta : pour partager sur galaxya et inclure les dépendances
+
+		* test : éléments de test
+
+		* library : modules spécifiques au rôle
+
+------------------------------------------------------------------------------------------------
+
+# ANSIBLE : LES ROLES
+
+
+GALAXY :
+
+	* un site : https://galaxy.ansible.com/
+
+	* une ligne de commande
