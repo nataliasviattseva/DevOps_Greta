@@ -1,0 +1,105 @@
+%title: ANSIBLE
+%author: pmerle
+
+
+# ANSIBLE : Module Systemd
+
+
+Documentation : 
+
+Objectifs : gestion des services systemd et reload
+
+Documentation : https://docs.ansible.com/ansible/2.5/modules/systemd_module.html
+
+
+PARAMETRES :
+
+* daemon_reexec :
+
+* daemon_reload : exécute un reload pour prendre en compte les changements de conf systemd
+
+* enabled : active le démarrage au boot du service
+
+* force : écraser les liens symboliques systemd
+
+* masked : masquer l'unité systemd
+
+* name : nom du service systemd
+
+* no_block : ne pas attendre la fin de l'opération pour continuer
+
+* scope: systemd manager pour un user ou l'ensemble des users
+
+* state : started /stopped / reloaded / restarted
+
+* user : deprecated
+
+
+-------------------------------------------------------------------------------------
+
+# ANSIBLE : Module Systemd
+
+
+* le plus simple : 
+
+```
+- name: Make sure a service is running
+  systemd:
+    name: haproxy
+    state: started
+```
+
+* arrêt
+
+```
+- name: Make sure a service is running
+  systemd:
+    name: haproxy
+    state: stopped
+```
+
+* activation au boot
+
+```
+- name: active to the start
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes
+```
+
+-------------------------------------------------------------------------------------
+
+# ANSIBLE : Module Systemd
+
+
+* exécuter avant si nécessaire un daemon-reload
+
+```
+- name: with daemon reload
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes
+    daemon-reload: yes
+```
+
+* s'assurer sa présence dans le list-units
+
+```
+- name: no masked
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes
+    daemon-reload: yes
+    masked: no
+```
+
+* juste faire un daemon-reload
+
+```
+- name: just do a daemon-reload
+  systemd:
+    daemon-reload: yes
+```
