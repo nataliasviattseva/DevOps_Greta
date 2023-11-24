@@ -1,0 +1,12 @@
+ - name: mon playbook
+   hosts: all
+   become: yes
+   tasks:
+
+    - name: test lineinfile
+      lineinfile:
+        dest: /tmp/test.conf
+        line: "Ma nouvelle ligne"
+        insertbefore: "^je suis le nombre: [0-2]"
+        state: present
+      

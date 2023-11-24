@@ -1,0 +1,42 @@
+
+
+
+*Docker run image
+sudo docker run --detach --name=node2 debian:bookworm
+sudo docker run --detach --name=node3 debian:bookworm
+
+
+*Create ansible inventory (inventory.yml)
+serveur_debian_test:
+  hosts:
+    node1:
+      ansible_connection: docker
+      ansible_user: root
+    node2:
+      ansible_connection: docker
+      ansible_user: root
+    node3:
+      ansible_connection: docker
+      ansible_user: root
+
+
+
+
+*Create playbook for install python (playbook.yml)
+- name: Install Python
+  become: true
+  hosts: all
+  gather_facts: no
+  tasks:
+  - name: Install Python
+    raw: apt -y update && apt install -y python3
+
+* Execute playbook
+ansible-playbook -i inventory.yml playbook.yml
+
+*Ansible ping
+ansible -i inventory.yml --module-name ping serveur_debian_test
+
+
+
+

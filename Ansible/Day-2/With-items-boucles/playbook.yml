@@ -1,0 +1,13 @@
+- name: PLaybook with items
+  hosts: all
+  tasks:
+    - name: creation des respertoires
+      file:
+        path: "/tmp/pmerle/{{ item }}"
+        recurse: yes
+        state: directory
+      with_items:
+        - pmerle1
+        - pmerle2
+        - pmerle3
+        - pmerle4

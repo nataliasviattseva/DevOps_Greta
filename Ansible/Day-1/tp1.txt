@@ -1,0 +1,52 @@
+
+
+*Install ansible
+sudo apt install ansible
+
+
+*Install docker
+sudo apt install docker-ce
+
+*Docker Pull debian image
+sudo docker pull debian:bookworm
+
+*Docker create image ( creer un repertoir mkdir nom du rep -> mkdir Dockerfile puis je colle le code)
+FROM debian:bookworm
+RUN apt update
+CMD tail --follow /dev/null
+
+* Build image
+sudo docker build --tag debian:bookworm .
+
+*Docker run image
+sudo docker run --detach --name=node1 debian:bookworm
+
+
+*Create ansible inventory (inventory.yml)
+serveur_debian_test:
+  hosts:
+    node1:
+      ansible_connection: docker
+      ansible_user: root
+
+
+
+
+*Create playbook for install python (playbook.yml)
+- name: Install Python
+  become: true
+  hosts: node1
+  gather_facts: no
+  tasks:
+  - name: Install Python
+    raw: apt -y update && apt install -y python3
+
+*Execute playbook
+ansible-playbook -i inventory.yml playbook.yml
+
+*Ansible ping
+ansible --inventory inventory.yml --module-name ping serveur_debian_test
+
+
+
+

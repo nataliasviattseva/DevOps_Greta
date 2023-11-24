@@ -1,0 +1,23 @@
+---
+# tasks file for roles/ssh_users
+
+- name: creation du user devops
+  user:
+    name: devops2
+    shell: /bin/bash
+    group: sudo
+    append: yes
+    password: "{{ 'password' | password_hash('sha512') }}"
+  become: yes
+
+- name: add devops user to the sudoers
+  copy:
+    dest: "/etc/sudoers.d/devops2"
+    content: "devops ALL=(ALL) NOPASSWD: ALL"
+
+- name: Deploy SSH Key
+  authorized_key:
+    user: devops2
+    key: "{{ lookup('file', '/tmp/pmerle.pub') }}"
+    state: present
+  

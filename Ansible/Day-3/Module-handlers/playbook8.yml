@@ -1,0 +1,51 @@
+- name: test des handlers
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: installation nginx et utilitaires
+    apt:
+      name: curl,nginx
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+      
+  - name: suppression du vhost par defaut
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - "/etc/nginx/sites-available/default"
+      - "/etc/nginx/sites-enabled/default"
+
+  - name: installation du vhost
+    vars:
+      nginx_port: "8080"
+    template:
+      src: "vhost.conf.j2"
+      dest: "/etc/nginx/sites-available/vhost.conf"
+      owner: root
+      group: root
+      mode: 0644exit
+    notify: reload_nginx
+
+  - name: flush_handlers
+    meta: flush_handlers
+
+  - name: creation du lien vhost
+    file:
+      src: "/etc/nginx/sites-available/vhost.conf"
+      dest: "/etc/nginx/sites-enabled/vhost.conf"
+      state: link
+
+  - name: start nginx
+    systemd:
+      name: nginx
+      state: started
+
+  handlers:
+    - name: reload_nginx
+      systemd:
+        name: nginx
+        state: reloaded
+

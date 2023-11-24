@@ -1,0 +1,13 @@
+ - name: mon playbook
+   hosts: all
+   become: yes
+   tasks:
+
+    - name: test lineinfile
+      lineinfile:
+        dest: /tmp/test.conf
+        line: 'je suis le nombre: \1'
+        regexp: "^test ([0-2])$"
+        backrefs: yes
+        state: present
+      

@@ -1,0 +1,10 @@
+- name: Utilisation du module apt
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installaytion de haproxy
+      apt:
+        name: haproxy
+        state: latest
+        update_cache: yes
+        cache_valid_time: 60

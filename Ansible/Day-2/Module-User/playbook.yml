@@ -1,0 +1,11 @@
+ - name: creation d'utilisateur
+   hosts: all
+   become: yes
+   tasks:
+
+     - name: Creation du user toto
+       user:
+         name: toto
+         password: "{{ 'password' | password_hash('sha512') }}"
+         state: present
+

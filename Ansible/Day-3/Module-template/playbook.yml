@@ -1,0 +1,11 @@
+- name: module template
+  vars:
+    var1: "Hello !"
+  hosts: all
+  tasks:
+
+    - name: test template
+      template:
+        src: monexemple.yml.j2
+        dest: /tmp/hello.txt
+

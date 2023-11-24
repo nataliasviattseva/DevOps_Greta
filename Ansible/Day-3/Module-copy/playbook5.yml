@@ -1,0 +1,11 @@
+- name: decouverte de copy
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: module copy
+      copy:
+        src: "{{ item }}"
+        dest: /tmp
+      with_fileglob:
+        - pmerle*

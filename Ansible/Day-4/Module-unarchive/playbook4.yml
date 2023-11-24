@@ -1,0 +1,17 @@
+- name: test de unarchive
+  hosts: all
+  tasks:
+
+  - name: unarchive node exporter
+    get_url:
+      url: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+      dest: /tmp/
+      validate_certs: no
+    delegate_to: localhost
+    run_once: yes
+
+
+  - name: copy and unarchive
+    unarchive:
+      src: /tmp/node_exporter-1.0.1.linux-amd64.tar.gz
+      dest: /tmp/

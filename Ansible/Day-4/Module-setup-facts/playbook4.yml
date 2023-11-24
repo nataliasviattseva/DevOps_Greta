@@ -1,0 +1,14 @@
+ - name: test gathering facts
+   hosts: all
+   gather_facts: no
+   tasks:
+
+    - name: setup
+      setup:
+        filter: ansible_user*
+      register: __host_facts
+
+
+    - name: debug
+      debug:
+        var: __host_facts

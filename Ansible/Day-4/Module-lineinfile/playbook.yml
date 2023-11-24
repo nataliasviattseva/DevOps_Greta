@@ -1,0 +1,11 @@
+ - name: mon playbook
+   hosts: all
+   become: yes
+   tasks:
+
+    - name: test lineinfile
+      lineinfile:
+        dest: /tmp/test.conf
+        line: "test"
+        state: present
+        create: True

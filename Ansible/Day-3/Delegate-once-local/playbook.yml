@@ -1,0 +1,8 @@
+- name: premier playbook
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: création de fichier
+    file:
+      state: touch
+      path: /tmp/pmerle.txt

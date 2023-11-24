@@ -1,0 +1,10 @@
+- name: Utilisation du module apt
+  hosts: all
+  become: yes
+  tasks:
+    - name: Suppression de haproxy
+      apt:
+        name: haproxy
+        state: absent
+        purge: yes
+        autoremove: yes
