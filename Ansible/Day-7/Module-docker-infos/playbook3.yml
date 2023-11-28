@@ -1,0 +1,51 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: run
+    docker_container:
+      name: n{{ item }}
+      image: nginx
+      state: started
+    with_sequence: count=5
+
+  - name: container list
+    docker_host_info:
+      containers: True
+    register: __docker_info
+
+  - name: collecte ips
+    docker_container_info:
+      name: '{{ item.Names[0] | regex_replace("^/", "") }}'
+    register: __container_infos
+    loop: '{{ __docker_info.containers }}'
+
+  - name: print
+    debug:
+      msg: "{{ item.container.NetworkSettings.Networks.bridge.IPAddress }}"
+    with_items:
+    - "{{ __container_infos.results }}"
+    
+
+  
+
+
+
+
+
+  

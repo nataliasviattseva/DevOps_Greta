@@ -1,0 +1,49 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: create directory
+    file:
+      path: /tmp/data
+      state: directory
+
+  - name: create a volume
+    docker_volume:
+      name: devops_data
+      driver: local
+      driver_options:
+        o: bind
+        type: bind
+        device: /tmp/data
+
+  - name: get info about volume
+    docker_volume_info:
+      name: devops_data
+    register: __volume_infos
+
+  - name: print
+    debug:
+      var: __volume_infos
+
+
+
+
+
+
+
+  

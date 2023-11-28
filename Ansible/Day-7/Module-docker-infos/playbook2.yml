@@ -1,0 +1,42 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: run
+    docker_container:
+      name: c1
+      image: nginx
+      state: started
+    register: __container_infos
+
+  - name: print output
+    debug:
+      var: __container_infos
+
+  - name: test
+    uri:
+      url: "http://{{ __container_infos.container.NetworkSettings.Networks.bridge.IPAddress }}"
+      status_code: 200
+
+  
+
+
+
+
+
+  

@@ -1,0 +1,46 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: run
+    docker_container:
+      name: n{{ item }}
+      image: nginx
+      state: started
+    with_sequence: count=5
+
+  - name: create network devops3
+    docker_network:
+      name: devops3
+
+  - name: get info about network
+    docker_network_info:
+      name: devops3
+    register: __network_infos
+
+  - name: debug
+    debug:
+      var: __network_infos
+
+  
+
+
+
+
+
+  
