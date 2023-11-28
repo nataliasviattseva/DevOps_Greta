@@ -1,0 +1,48 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: copy files
+    file:
+      path: /tmp/build
+      state: directory
+  - name: copy image
+    copy:
+      src: app/
+      dest: /tmp/build
+  - name: build
+    docker_image:
+      name: imgbuild:v1.1
+      tag: v1.1
+      source: build
+      build:
+        path: /tmp/build/
+        dockerfile: Dockerfile
+        cache_from:
+        - alpine:3.9
+
+  - name: container list
+    docker_host_info:
+      containers: True
+    register: __docker_info
+
+  - name: remove all containers
+    docker_container:
+      name: '{{ item.Names[0] | regex_replace("^/", "") }}'
+      state: absent
+    loop: '{{ __docker_info.containers }}'

@@ -1,0 +1,16 @@
+- name: synchronize 1
+  hosts: all
+  tasks:
+
+    - name: install rsync
+      become: yes
+      apt:
+        name: rsync
+        state: present
+        update_cache: yes
+
+    - name: syncronize
+      synchronize:
+        src: pmerle.txt
+        dest: /tmp/pmerle
+

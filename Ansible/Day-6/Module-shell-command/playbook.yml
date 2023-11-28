@@ -1,0 +1,16 @@
+- name: test command
+  hosts: all
+  tasks:
+
+    - name: my command
+      command:
+        argv:
+        - ls
+        - -larth
+        chdir: /etc/
+      register: __output
+
+    - name: debug
+      debug:
+        var: __output
+

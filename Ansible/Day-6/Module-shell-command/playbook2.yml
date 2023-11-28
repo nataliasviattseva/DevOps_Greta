@@ -1,0 +1,17 @@
+- name: test command
+  hosts: all
+  tasks:
+
+    - name: my command
+      environment:
+        MYVAR: devops
+      shell: |
+        cat /etc/hosts | grep 127
+        cat /etc/resolv.conf
+        echo " Hello $MYVAR"
+      register: __output
+
+    - name: debug
+      debug:
+        var: __output.stdout_lines
+

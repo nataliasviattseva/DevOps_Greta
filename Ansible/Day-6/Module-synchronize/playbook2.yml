@@ -1,0 +1,21 @@
+- name: synchronize 1
+  hosts: all
+  tasks:
+
+    - name: install rsync
+      become: yes
+      apt:
+        name: rsync
+        state: present
+        update_cache: yes
+
+    - name: create dir
+      file:
+        dest: /tmp/files
+        state: directory
+
+    - name: syncronize
+      synchronize:
+        src: files/
+        dest: /tmp/files
+

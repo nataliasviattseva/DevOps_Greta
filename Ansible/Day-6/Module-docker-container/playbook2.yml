@@ -1,0 +1,55 @@
+
+- name: test module docker image
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: install docker & docker for python
+    apt:
+      name: docker.io, python3-docker
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: start start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: copy files
+    file:
+      path: /tmp/build
+      state: directory
+  - name: copy image
+    copy:
+      src: app/
+      dest: /tmp/build
+  - name: build
+    docker_image:
+      name: imgbuild:v1.1
+      tag: v1.1
+      source: build
+      build:
+        path: /tmp/build/
+        dockerfile: Dockerfile
+        cache_from:
+        - alpine:3.9
+
+  - name: run
+    docker_container:
+      name: c1
+      image: imgbuild:v1.1
+      state: started
+      ports:
+        - 8888:8080
+      healthcheck:
+        test: ["CMD", "curl", "http://127.0.0.1:8080"]
+        interval: 5s
+        timeout: 10s
+        retries: 3
+        start_period: 10s
+
+
+
+  
