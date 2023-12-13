@@ -1,0 +1,49 @@
+Creer une groupe de sessource
+
+Creer 3 VM:
+1. Linux avec Wordpress (ou autre CMS) avec Docker
+2. Linux avec une site web perso avec SSL
+3. Windows Serveur avec un virtual host sur IIS
+
+VM01
+
+sudo su
+apt update && apt upgrade
+apt install docker.io
+
+
+
+docker network create wordpress-network
+
+
+docker run -d \
+  --network wordpress-network \
+  --name wordpress-db \
+  -e MYSQL_ROOT_PASSWORD=pp \
+  -e MYSQL_DATABASE=wordpress \
+  -e MYSQL_USER=root \
+  -e MYSQL_PASSWORD=pp \
+  mysql:latest
+
+
+docker run -d \
+  --network wordpress-network \
+  -p 8080:80 \
+  --name wordpress \
+  -e WORDPRESS_DB_HOST=wordpress-db \
+  -e WORDPRESS_DB_USER=wordpress \
+  -e WORDPRESS_DB_PASSWORD=pp \
+  -e WORDPRESS_DB_NAME=wordpress \
+  wordpress:latest
+
+docker ps
+
+docker inspect
+
+VM02
+
+sudo su
+apt update && apt upgrade
+
+apt install -y nginx
+apt install -y apache2
