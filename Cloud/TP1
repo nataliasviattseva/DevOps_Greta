@@ -1,0 +1,30 @@
+------Docker :
+
+#Installation de Docker
+
+apt update && apt upgrade -y
+apt install docker.io -y
+
+
+#Déploiement d'un conteneur simple basé sur debian
+
+docker run --name debian -dit -p80:80 -p2222:22 debian:latest
+
+
+# On rentre dans le conteneur
+docker exec -it 2d8ab8ca11b2 /bin/bash
+
+
+#Installer apache2 dans le conteneur
+
+service apache2 status
+service apache2 start
+
+
+#On remplace la page par défaut par notre texte
+echo "Hello World 16:30 " > /var/www/html/index.html
+
+
+service ssh restart
+
+ssh root@localhost -p2222
