@@ -26,6 +26,9 @@ az network nic create -g greta --vnet-name myVnet --subnet mySubnet2 -n myNic2 -
 # Creation VM
  az vm create --name myVm -g greta --image "Ubuntu2204" --size "Standard_B1ls" --authentication-type password --admin-password "Azerty123456" --admin-username "azureuser" --location "NorthEurope" --nics myNic1 myNic2
 
+# Obtenir l'information
+get-AzNetworkInterface -Name myNic1 -ResourceGroupName greta
+get-AzNetworkInterface -Name myNic1 -ResourceGroupName greta
 
 
 
