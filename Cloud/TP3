@@ -1,1 +1,10 @@
-$myVnet = New-AzVirtualNetwork -ResourceGroupName greta -Location NorthEurope
+$myVnet = New-AzVirtualNetwork -ResourceGroupName greta -Location NorthEurope -Name myVnet -AddressPrefix 10.0.0.0/16
+
+# To check the created network
+Get-AzVirtualNetwork -Name myVnet
+
+$mySubnet = Add-AzVirtualNetworkSubnetConfig -Name mySubnet -AddressPrefix 10.0.0.0/24 -VirtualNetwork $myVnet
+
+# To check the created subnet
+Get-AzVirtualNetworkSubnetConfig -Name mySubnet -VirtualNetwork $myVnet
+
