@@ -1,0 +1,123 @@
+hello coucou
+
+
+ISO
+https://easyformers-my.sharepoint.com/:f:/g/personal/dorian_manzanares_easyformers_fr/Eg68su_0hqhIjfDeRnaK3oMBTB7khWiDU2q6SGB7OJ7euA?e=FjNOO4
+
+Livres
+https://easyformers-my.sharepoint.com/:f:/g/personal/dorian_manzanares_easyformers_fr/EmonxWtDmQtAjFRXy35j56gBZl1ufOG11aB02ERkdiKZdA?e=m8q5Ju
+
+Vidéos
+https://easyformers-my.sharepoint.com/:f:/g/personal/dorian_manzanares_easyformers_fr/ErHdVecFYD1GmCOO3bdaMuQBp9-sxAofrMFfL85eT_5wKg?e=MBGP6z
+
+
+Certif :
+
+
+https://cloud.google.com/learn/certification?hl=fr#why-get-google-cloud-certified
+
+https://www.aws.training/LearningLibrary?query=&filters=Language%3A1%20DeliveryFormat%3A1%2C4%2C6%2C7%2C8&from=0&size=15&sort=_score
+
+https://www.cloudskillsboost.google/paths
+
+https://learn.microsoft.com/fr-fr/training/browse/
+
+
+https://learn.microsoft.com/fr-fr/azure/architecture/browse/
+
+https://aws.amazon.com/fr/blogs/architecture/
+
+
+
+___________________________________________________________________________________
+------Docker :
+
+#Installation de Docker
+
+apt update && apt upgrade -y
+apt install docker.io -y
+
+#Déploiement d'un conteneur simple basé sur debian
+
+docker run --name debian -dit -p80:80 -p2222:22 debian:latest
+
+# On rentre dans le conteneur
+docker exec -it 2d8ab8ca11b2 /bin/bash
+
+
+#Installer apache2 dans le conteneur
+
+service apache2 status
+service apache2 start
+
+#On remplace la page par défaut par notre texte
+echo "Hello World 16:30 " > /var/www/html/index.html
+
+
+service ssh restart
+
+ssh root@localhost -p2222
+
+
+
+
+
+
+
+
+https://temp-mail.io/fr
+https://temp-mail.us/fr/
+https://yopmail.com/fr/
+
+https://online-sms.org/fr
+
+https://www.noip.com/
+
+C:\Windows\System32\drivers\etc
+
+
+http://deedevops.sytes.net/
+
+
+______________________________________________________________
+Powershell Azure
+
+
+---------------------------------------------------
+# Se connecter à votre tenant
+az login
+
+Connect-AzAcount
+
+
+#Création d'un réseau virtuel 
+
+$myVnet = New-AzVirtualNetwork -ResourceGroupName greta -Location NorthEurope -Name myVnet -AddressPrefix 10.0.0.0/16
+
+
+#Vérification de la création du vnet 
+
+Get-AzVirtualNetwork -Name myVnet
+
+
+#Création d'un sous réseau
+$mySubnet = Add-AzVirtualNetworkSubnetConfig -Name mySubnet -AddressPrefix 10.0.0.0/24 -VirtualNetwork $myVnet
+
+
+#Vérification des informations du sous-réseau
+
+Get-AzVirtualNetworkSubnetConfig -Name mySubnet -VirtualNetwork $myVnet
+
+#Association du sous réseau au Vnet
+
+$mySubnet | Set-AzVirtualNetwork
+
+-------------------------------------------------
+
+
+Utilisation des commandes az
+
+
+
+#Création d'un vnet et subnet 
+az network vnet create -g greta -n myVnet --address-prefix 10.0.0.0/16 --subnet-name mySubnet1 --subnet-prefixes 10.0.1.0/24
