@@ -86,17 +86,14 @@ Powershell Azure
 ---------------------------------------------------
 # Se connecter à votre tenant
 az login
-
 Connect-AzAcount
 
 
 #Création d'un réseau virtuel 
-
 $myVnet = New-AzVirtualNetwork -ResourceGroupName greta -Location NorthEurope -Name myVnet -AddressPrefix 10.0.0.0/16
 
 
 #Vérification de la création du vnet 
-
 Get-AzVirtualNetwork -Name myVnet
 
 
@@ -105,11 +102,9 @@ $mySubnet = Add-AzVirtualNetworkSubnetConfig -Name mySubnet -AddressPrefix 10.0.
 
 
 #Vérification des informations du sous-réseau
-
 Get-AzVirtualNetworkSubnetConfig -Name mySubnet -VirtualNetwork $myVnet
 
 #Association du sous réseau au Vnet
-
 $mySubnet | Set-AzVirtualNetwork
 
 -------------------------------------------------
@@ -121,3 +116,24 @@ Utilisation des commandes az
 
 #Création d'un vnet et subnet 
 az network vnet create -g greta -n myVnet --address-prefix 10.0.0.0/16 --subnet-name mySubnet1 --subnet-prefixes 10.0.1.0/24
+
+#Création d'un second sous-réseau
+az network vnet subnet create -g greta --vnet-name myVnet -n mySubnet2 --address-prefix 10.0.2.0/24
+
+#Création d'un NSG
+az network nsg create -g greta -n myNsg
+
+
+#Création d'une carte réseau lié au vnet et nsg
+az network nic create -g greta --vnet-name myVnet --subnet mySubnet1 -n myNic1 --network-security-group myNsg
+
+#Création d'une seconde carte lié au même nsg
+az network nic create -g greta --vnet-name myVnet --subnet mySubnet2 -n myNic2 --network-security-group myNsg
+
+
+#Lister certaines images
+az vm image list
+
+
+#Création d'une vm associée à nos cartes réseaux
+az vm create --name myVm -g greta --image "Ubuntu2204" --size "Standard_B1ls" --authentication-type password --admin-password  "Azerty123456" --admin-username "azureuser" --location "NorthEurope" --nics myNic1 myNic2
