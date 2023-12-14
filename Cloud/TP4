@@ -1,0 +1,11 @@
+Creer un groupe de resources
+
+Creer 1 vnet et 4 subnet
+Creer Une variable pour les credentials
+Creer 2 VM (utilisant vos creds)Linux, dispo en ssh
+Creer une VM windows accessible depuis un Bastion
+Creer 1 NSG avec le port 22/3389 et 80
+
+Bonus (scrupter l''infra et la config applicative)
+
+PowerShell
