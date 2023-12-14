@@ -10,4 +10,5 @@ Get-AzVirtualNetworkSubnetConfig -Name mySubnet -VirtualNetwork $myVnet
 
 $mySubnet | Set-AzVirtualNetwork
 
-
+# PowerShell
+az network vnet create -g greta -n myVnet --address-prefix 10.0.0.0/16 --subnet-name MySubnet1 --subnet-prefix 10.0.1.0/24
