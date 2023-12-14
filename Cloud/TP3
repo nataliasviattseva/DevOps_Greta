@@ -20,6 +20,13 @@ az network nsg create -g greta -n myNsg
 # Creaion carte reseau virtuel
 az network nic create -g greta --vnet-name myVnet --subnet mySubnet1 -n myNic1 --network-security-group  myNsg
 
+# Creaion carte reseau virtuel dans le subnet2
+az network nic create -g greta --vnet-name myVnet --subnet mySubnet2 -n myNic2 --network-security-group  myNsg
+
+# Creation VM
+ az vm create --name myVm -g greta --image "Ubuntu2204" --size "Standard_B1ls" --authentication-type password --admin-password "Azerty123456" --admin-username "azureuser" --location "NorthEurope" --nics myNic1 myNic2
+
+
 
 
 
