@@ -1,11 +1,114 @@
+PowerShell
+
+
 Creer un groupe de resources
 
-Creer 1 vnet et 4 subnet
+Creer 1 vnet et 4 subnets
+
+# Definir les variables
+$resourceGroupName = "ngreta"
+$location = "NorthEurope"
+$vnetName = "myVnet"
+$addressPrefix = "10.0.0.0/16"
+
+Creer le groupe de ressources
+az group create --name $resourceGroupName --location $location
+
+Creer le reseau
+az network vnet create --resource-group $resourceGroupName --name $vnetName --address-prefixes $addressPrefix --subnet-name Subnet1 --subnet-prefixes "10.0.1.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet2 --address-prefix "10.0.2.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet3 --address-prefix "10.0.3.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet4 --address-prefix "10.0.4.0/24"
+
+------------------------------------------------------------------------------------------------
 Creer Une variable pour les credentials
 Creer 2 VM (utilisant vos creds)Linux, dispo en ssh
+
+# Définir les variables
+$resourceGroupName = "greta1"
+$location = "NorthEurope"
+$vmName1 = "myVM1"
+$vmName2 = "myVM2"
+$vnetName = "myVNet"
+$subnetName = "Subnet1"
+$adminUsername = "azureuser"
+$adminPassword = "Azerty123456"  
+
+# Créer les informations d'identification
+$securePassword = ConvertTo-SecureString -String $adminPassword -AsPlainText -Force
+$credentials = New-Object PSCredential -ArgumentList $adminUsername, $securePassword
+
+# Créer la première VM
+az vm create --resource-group $resourceGroupName --name $vmName1 --image Ubuntu2204 --admin-username $adminUsername --admin-password $adminPassword --vnet-name $vnetName --subnet $subnetName --public-ip-address ""
+$vm1 = Get-AzVM -ResourceGroupName $resourceGroupName -Name $vmName1
+$vm1 | Set-AzVMExtension -ExtensionName CustomScript --Publisher Microsoft.Compute --Type CustomScript --TypeHandlerVersion 1.10 --Settings '{"script":"<your_custom_script>"}' --ProtectedSettings '{"script":"<your_protected_settings>"}' | Update-AzVM
+
+# Créer la deuxième VM
+az vm create --resource-group $resourceGroupName --name $vmName2 --image Ubuntu2204 --admin-username $adminUsername --admin-password $adminPassword --vnet-name $vnetName --subnet $subnetName --public-ip-address ""
+$vm2 = Get-AzVM -ResourceGroupName $resourceGroupName -Name $vmName2
+$vm2 | Set-AzVMExtension -ExtensionName CustomScript --Publisher Microsoft.Compute --Type CustomScript --TypeHandlerVersion 1.10 --Settings '{"script":"<your_custom_script>"}' --ProtectedSettings '{"script":"<your_protected_settings>"}' | Update-AzVM
+
+---------------------------------------------------------------------------------------------------------------------------
+
 Creer une VM windows accessible depuis un Bastion
+
+# Définir les variables
+$resourceGroupName = "NomDuGroupeDeRessources"
+$location = "EmplacementAzure"
+$vmName = "NomDeLaVM"
+$vnetName = "NomDuVNet"
+$subnetName = "Subnet1"
+$adminUsername = "NomUtilisateur"
+$adminPassword = "MotDePasse"  # Ne pas utiliser en production, préférez l'utilisation de clés SSH
+$bastionName = "NomDuBastion"
+
+# Créer le groupe de ressources
+az group create --name $resourceGroupName --location $location
+
+# Créer la VM Windows
+az vm create `
+  --resource-group $resourceGroupName `
+  --name $vmName `
+  --image Win2019Datacenter `
+  --admin-username $adminUsername `
+  --admin-password $adminPassword `
+  --vnet-name $vnetName `
+  --subnet $subnetName `
+  --public-ip-address ""
+
+# Créer Azure Bastion
+az network bastion create --name $bastionName --public-ip-address $bastionName --resource-group $resourceGroupName --vnet-name $vnetName
+
+# Configurer la règle NSG pour permettre l'accès RDP depuis Azure Bastion
+az network nsg rule create --resource-group $resourceGroupName --nsg-name "${vmName}-NSG" --name AllowBastionRDP --access Allow --protocol Tcp --direction Inbound --priority 1000 --source-address-prefixes "AzureBastion" --source-port-ranges "*" --destination-address-prefixes "*" --destination-port-ranges 3389
+
+# Attribuer le Bastion à la VM
+az network bastion show --name $bastionName --resource-group $resourceGroupName --query "ipConfigurations[0].id" --output tsv | xargs az network nic ip-config update --clear
+az network nic ip-config update --ids $(az vm show -n $vmName -g $resourceGroupName --query "networkProfile.networkInterfaces[0].id" --output tsv)/ipConfigurations/1 --add "bastionBackends[0].ipConfigurations[0].id=$(az network bastion show --name $bastionName --resource-group $resourceGroupName --query "ipConfigurations[0].id" --output tsv)"
+
+# Vérifier l'adresse IP publique du Bastion
+az network public-ip show --name $bastionName --resource-group $resourceGroupName --query "ipAddress" --output tsv
+
+
+
+
 Creer 1 NSG avec le port 22/3389 et 80
+# Définir les variables
+$resourceGroupName = "NomDuGroupeDeRessources"
+$nsgName = "NomDuNSG"
+
+# Créer le groupe de ressources
+az group create --name $resourceGroupName --location "EmplacementAzure"
+
+# Créer le NSG
+az network nsg create --resource-group $resourceGroupName --name $nsgName
+
+# Ajouter les règles pour les ports 22, 3389 et 80
+az network nsg rule create --resource-group $resourceGroupName --nsg-name $nsgName --name Allow_SSH --priority 100 --direction Inbound --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 22 --access Allow --protocol Tcp
+az network nsg rule create --resource-group $resourceGroupName --nsg-name $nsgName --name Allow_RDP --priority 200 --direction Inbound --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 3389 --access Allow --protocol Tcp
+az network nsg rule create --resource-group $resourceGroupName --nsg-name $nsgName --name Allow_HTTP --priority 300 --direction Inbound --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 80 --access Allow --protocol Tcp
+
+
 
 Bonus (scrupter l''infra et la config applicative)
 
-PowerShell
