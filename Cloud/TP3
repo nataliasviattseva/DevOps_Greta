@@ -12,3 +12,14 @@ $mySubnet | Set-AzVirtualNetwork
 
 # PowerShell
 az network vnet create -g greta -n myVnet --address-prefix 10.0.0.0/16 --subnet-name MySubnet1 --subnet-prefix 10.0.1.0/24
+az network vnet subnet create -g greta --vnet-name myVnet -n mySubnet2 --address-prefix 10.0.2.0/24  
+
+#Création d'un NSG
+az network nsg create -g greta -n myNsg
+
+# Creaion carte reseau virtuel
+az network nic create -g greta --vnet-name myVnet --subnet mySubnet1 -n myNic1 --network-security-group  myNsg
+
+
+
+
