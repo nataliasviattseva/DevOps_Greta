@@ -1,0 +1,1 @@
+$myVnet = New-AzVirtualNetwork -ResourceGroupName greta -Location NorthEurope
