@@ -8,3 +8,6 @@ $mySubnet = Add-AzVirtualNetworkSubnetConfig -Name mySubnet -AddressPrefix 10.0.
 # To check the created subnet
 Get-AzVirtualNetworkSubnetConfig -Name mySubnet -VirtualNetwork $myVnet
 
+$mySubnet | Set-AzVirtualNetwork
+
+
