@@ -3,18 +3,14 @@ sudo su
 apt update && apt upgrade -y
 apt install docker.io -y
 
-
 #Déploiement d'un conteneur simple basé sur debian
 docker run --name debian -dit -p80:80 -p2222:22 debian:latest
-
 
 # Obtenir le nom de container
 docker ps
 
-
 # On rentre dans le conteneur
 docker exec -it 242be91d11f7 /bin/bash
-
 
 # Mettre à jour les paquets
 apt update && apt upgrade -y
@@ -34,7 +30,6 @@ service apache2 restart
 service apache2 status
 service apache2 start
 
-
 # On remplace la page par défaut d'Apache par notre texte
 echo "Hello World 16:30 " > /var/www/html/index.html
 service apache2 restart
@@ -51,7 +46,6 @@ docker exec -it 242be91d11f7 /bin/bash
 service ssh start
 service apache2 start
 
-
 # Se connecter au conteneur via SSH 
 docker inspect 242be91d11f7
 ssh root@172.17.0.2
@@ -63,8 +57,3 @@ ssh root@localhost -p2222
 # c:\Windows\System32\drivers\etc\hosts
 # 
 # Au niveau Azure > Networking > Add inbound security rule avec Destination port ranges='*'
-
-
-
-
-
