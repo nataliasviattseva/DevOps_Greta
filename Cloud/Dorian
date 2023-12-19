@@ -137,3 +137,13 @@ az vm image list
 
 #Création d'une vm associée à nos cartes réseaux
 az vm create --name myVm -g greta --image "Ubuntu2204" --size "Standard_B1ls" --authentication-type password --admin-password  "Azerty123456" --admin-username "azureuser" --location "NorthEurope" --nics myNic1 myNic2
+
+#Vérifier les cartes réseaux 
+Get-AzNetworkInterface -Name myNic1 -ResourceGroupName greta
+Get-AzNetworkInterface -Name myNic2 -ResourceGroupName greta
+
+
+------------------------------------------------------
+
+AD connect
+https://drive.google.com/file/d/1dwCUtclbF6_jJ3tOvP6XTMYV3m5VV9H-/view?usp=sharing
