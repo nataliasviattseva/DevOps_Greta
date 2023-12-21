@@ -1,9 +1,9 @@
-Creer une groupe de sessource
+# Creer une groupe de ressource
 
-Creer 3 VM:
-1. Linux avec Wordpress (ou autre CMS) avec Docker
-2. Linux avec une site web perso avec SSL
-3. Windows Serveur avec un virtual host sur IIS
+# Creer 3 VM:
+# 1. Linux avec Wordpress (ou autre CMS) avec Docker
+# 2. Linux avec une site web perso avec SSL
+# 3. Windows Serveur avec un virtual host sur IIS
 
 VM01
 

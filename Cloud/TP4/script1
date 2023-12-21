@@ -1,0 +1,47 @@
+# Definir les variables
+$resourceGroupName = "greta"
+$location = "NorthEurope"
+$vnetName = "myVnet"
+$addressPrefix = "10.0.0.0/16"
+$vmName1 = "myVM1"
+$vmName2 = "myVM2"
+$subnetName = "Subnet1"
+$adminUsername = "azureuser"
+$adminPassword = "Azerty123456" 
+
+# Creer le groupe de ressources
+az group create --name $resourceGroupName --location $location
+
+# Creer le reseau
+az network vnet create --resource-group $resourceGroupName --name $vnetName --address-prefixes $addressPrefix --subnet-name Subnet1 --subnet-prefixes "10.0.1.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet2 --address-prefix "10.0.2.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet3 --address-prefix "10.0.3.0/24"
+az network vnet subnet create --resource-group $resourceGroupName --vnet-name $vnetName --name Subnet4 --address-prefix "10.0.4.0/24"
+
+# Créer les informations d'identification
+$securePassword = ConvertTo-SecureString -String $adminPassword -AsPlainText -Force
+$credentials = New-Object PSCredential -ArgumentList $adminUsername, $securePassword
+
+# Créer la première VM
+az vm create --name $vmName1 -g $resourceGroupName --image "Ubuntu2204" --size "Standard_B1ls" --authentication-type ssh --admin-password  $adminPassword --admin-username $adminUsername 
+
+
+
+az vm create --resource-group $resourceGroupName --name $vmName1 --image Ubuntu2204 --admin-username $adminUsername --admin-password $adminPassword --vnet-name $vnetName --subnet $subnetName --public-ip-address ""
+# $vm1 | Set-AzVMExtension -ExtensionName CustomScript --Publisher Microsoft.Compute --Type CustomScript --TypeHandlerVersion 1.10 --Settings '{"script":"<your_custom_script>"}' --ProtectedSettings '{"script":"<your_protected_settings>"}' | Update-AzVM
+
+# Créer la deuxième VM
+az vm create --resource-group $resourceGroupName --name $vmName2 --image Ubuntu2204 --admin-username $adminUsername --admin-password $adminPassword --vnet-name $vnetName --subnet $subnetName --public-ip-address ""
+$vm2 = Get-AzVM -ResourceGroupName $resourceGroupName -Name $vmName2
+$vm2 | Set-AzVMExtension -ExtensionName CustomScript --Publisher Microsoft.Compute --Type CustomScript --TypeHandlerVersion 1.10 --Settings '{"script":"<your_custom_script>"}' --ProtectedSettings '{"script":"<your_protected_settings>"}' | Update-AzVM
+
+# Replace the following variables with your actual values
+$resourceGroupName = "YourResourceGroup"
+$vmName = "YourVMName"
+$username = "YourVMUsername"
+$publicIpAddress = (Get-AzPublicIpAddress -ResourceGroupName $resourceGroupName -Name "$vmName-ip").IpAddress
+
+# Establish SSH connection
+ssh "$username@$publicIpAddress"
+
+
