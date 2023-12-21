@@ -114,3 +114,13 @@ docker service create \
   --mount type=bind,src=/etc/haproxy/,dst=/etc/haproxy/,ro=true \
   --dns=127.0.0.11 \
   haproxytech/haproxy-debian:2.0  
+
+
+  
+  
+#Augmentation des répliques apache
+
+docker service scale apache-Service=4
+
+#Reboot du service
+docker kill --signal USR2 $(docker container ls --filter name=haproxy-service --quiet)
