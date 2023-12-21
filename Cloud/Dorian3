@@ -1,0 +1,13 @@
+# Bastion : 
+
+
+# Téléchargement du bastion
+wget https://git.io/fxZq5 -O guac-install.sh
+
+# Le rendre exécutable
+chmod +x guac-install.sh
+
+# Exécuter le script
+./guac-install.sh
+
+
