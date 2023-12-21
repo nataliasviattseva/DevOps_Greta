@@ -1,0 +1,62 @@
+#Ressource group
+New-AzResourceGroup -Name greta2 -Location NorthEurope
+
+#Ip publique 
+$myIp = New-AzPublicIpAddress -Name myIp -ResourceGroupName greta2 -Location NorthEurope -Sku Standard -AllocationMethod Static
+
+#Création d'un frontend lb
+$frontend = New-AzLoadBalancerFrontendIpConfig -Name FrontEnd -PublicIpAddressId $myIp
+
+#Création du backend 
+$backend = New-AzLoadBalancerBackendAddressPoolConfig -Name "myBackend"
+
+#Création d'un healt probe
+$probe = New-AzLoadBalancerProbeConfig -Name myHealthProbe -Protocol Tcp -Port 80 -IntervalInSeconds 360 -ProbeCount 5
+
+
+#Création d'une règle de load balancing
+$rule1 = New-AzLoadBalancerRuleConfig -Name http -FrontendIpConfiguration $frontend -BackendAddressPool $backend -Probe $probe -Protocol Tcp -FrontendPort 80 -BackendPort 80 -LoadDistribution SourceIP
+
+
+#Création d'un load balancer (instable)
+$lb = New-AzLoadBalancer -ResourceGroupName greta2 -Name load -Location NorthEurope -FrontendIpConfiguration $frontend -BackendAddressPool $backend -LoadBalancingRule $rule1 -Probe $probe
+
+#Création de l'ip publique pour la nat gateway
+$ipnat = New-AzPublicIpAddress -Name ipNat -ResourceGroupName greta2 -Location NorthEurope -Sku Standard -AllocationMethod Static
+
+#Création de la nat gateway
+$natgateway = New-AzNatGateway -ResourceGroupName greta2 -Location NorthEurope -Name natgtw -Sku S
+tandard -PublicIpAddress $ipnat
+
+#Création d'un subnet backend
+$subnetconfig = New-AzVirtualNetworkSubnetConfig -Name backendsubnet -AddressPrefix 10.1.0.0/24 -NatGateway $natgateway
+
+#Création d'un subnet Bastion
+$bastsubnet = New-AzVirtualNetworkSubnetConfig -Name AzureBastionSubnet -AddressPrefix 10.1.1.0/24
+
+#Création du vnet et asso des deux subnet 
+$vnet = New-AzVirtualNetwork -ResourceGroupName greta2 -Location NorthEurope -Name vnet -AddressPrefix 10.1.0.0/16 -Subnet $subnetconfig,$bastsubnet
+
+#Création d'une ip publique pour le bastion
+$bastip = New-AzPublicIpAddress -Name bastip -ResourceGroupName greta2 -Location NorthEurope -Sku Standard -AllocationMethod Static
+
+#Création d'un bastion
+$bastion = New-AzBastion -ResourceGroupName greta2 -Name BastionHost -PublicIpAddress $bastip -VirtualNetwork $vnet
+
+#Création d'une règle de NSG
+$nsgrule1 = New-AzNetworkSecurityRuleConfig -Name myHTTP -Description allowhttp -Protocol "*" -SourcePortRange "*" -DestinationPortRange 80 -SourceAddressPrefix Internet -DestinationAddressPrefix "*" -Access Allow -Priority 2000 -Direction Inbound
+
+#Création d'un NSG
+$nsg = New-AzNetworkSecurityGroup -ResourceGroupName greta2 -Location NorthEurope -Name myNsg -SecurityRules $nsgrule1
+
+#Création d'une carte réseau
+az network nic create --resource-group greta2 --name niclx --vnet-name vnet --subnet backendsubnet --network-security-group myNsg --lb-name load
+
+#Création de la VM 
+az vm create --name myVm --resource-group greta2 --image "Debian11" --size "Standard_B1s" --authentication-type password --admin-password Azerty123456 --admin-username "azureuser" --location NorthEurope --nics niclx
+
+#Ajouter une ip dans le backend du load balancer
+az network lb address-pool address add -g greta2 --lb-name load --pool-name backend -n MyAddress --vnet vnet --ip-address 10.1.0.4
+
+#Envoyer une commande dans une vm
+az vm run-command invoke -g greta2 -n myVm --command-id RunShellScript --scripts "sudo apt-get update && sudo apt-get install -y nginx"
