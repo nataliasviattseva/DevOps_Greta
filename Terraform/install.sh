@@ -34,3 +34,6 @@ clear
 # Parcer installation
 echo "Parcer installation"
 sudo apt-get install -y packer
+
+
+
