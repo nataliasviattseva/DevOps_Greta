@@ -1,0 +1,23 @@
+For VM where it is necessary to install Docker
+nano /etc/ssh/sshd_config
+uncomment PermitRootLogin yes
+
+sudo visudo 
+user ALL=(ALL:ALL) ALL
+
+ssh-keygen
+
+
+For VM where Terraform is installed 
+bash ssh.sh
+nano main.tf
+
+terraform init
+terraform plan
+terraform apply
+
+For both machines it is necessary to connect via ssh befote applying main.tf
+
+
+
+
