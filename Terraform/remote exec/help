@@ -1,22 +1,67 @@
-For VM where it is necessary to install Docker
+# It is not a script, is is just the notes
+
+
+# For VM where it is necessary to install Docker
 nano /etc/ssh/sshd_config
-uncomment PermitRootLogin yes
+# uncomment PermitRootLogin yes
 
-sudo visudo 
-user ALL=(ALL:ALL) ALL
+# Add to sudoers (optional, it's better to use root)
+# sudo visudo
+# user ALL=(ALL:ALL) ALL
 
+# For 2 VM:
+apt-get install openssh-server
 ssh-keygen
 
 
-For VM where Terraform is installed 
-bash ssh.sh
+# For VM where Terraform is installed
+bash ssh.sh  # script that copies rsa_id.pub to the destination machine
+# Create the file
 nano main.tf
 
+# Terraform commands
 terraform init
 terraform plan
 terraform apply
 
-For both machines it is necessary to connect via ssh befote applying main.tf
+# For both machines it is necessary to connect via ssh before applying main.tf for accept connection fingerprint
+
+
+ChatGPT:
+
+
+Your notes seem to provide instructions for setting up and configuring virtual machines, particularly those where Docker and Terraform are involved. Here's a brief overview and some suggestions:
+
+Enabling Root Login:
+
+You uncomment the line PermitRootLogin yes in the /etc/ssh/sshd_config file. This allows root login via SSH. Note that enabling root login can have security implications and is generally discouraged. It's recommended to use a regular user account with sudo privileges.
+Adding User to Sudoers:
+
+You suggest adding a user to the sudoers file using sudo visudo. This is a good practice for granting administrative privileges. Ensure you replace "user" with the actual username you want to grant sudo access.
+Setting up SSH on Two VMs:
+
+You install the openssh-server and generate an SSH key pair using ssh-keygen. This is a standard procedure for setting up SSH communication between machines.
+Using a Script for SSH Key Copying:
+
+You have a script (ssh.sh) that copies the public SSH key to the destination machine. Make sure this script is correctly implemented and accomplishes the intended task.
+Terraform Setup:
+
+You create a main.tf file for Terraform configurations. Ensure that this file contains the necessary information for setting up your infrastructure.
+Terraform Commands:
+
+You list the essential Terraform commands (init, plan, apply). These commands are standard for initializing, planning, and applying Terraform configurations.
+Connecting via SSH Before Applying Terraform:
+
+You mention the importance of connecting via SSH before applying the Terraform configuration to accept the connection fingerprint. This is a good reminder to establish the initial connection and avoid potential issues during Terraform apply.
+Suggestions:
+
+Always prioritize security. Avoid enabling root login if possible; use a regular user with sudo privileges.
+Ensure the ssh.sh script is well-tested and accomplishes the intended task.
+Document any specific configurations or variables needed in the main.tf file.
+Consider adding error handling or confirmation prompts in your scripts to prevent accidental misconfigurations.
+Regularly update and review your security measures.
+Remember to adapt these suggestions based on your specific use case and security requirements.
+
 
 
 
