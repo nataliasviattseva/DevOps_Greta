@@ -1,8 +1,8 @@
 Connect-AzAccount
 
-$sp = New-AzADServicePrincipal -DisplayName "service_principal_name" -Role "Contributor"
+$sp = New-AzADServicePrincipal -DisplayName "nsviattseva" -Role "Contributor"
 
-Get-AzADServicePrincipal -DisplayNameBeginsWith "srvAzTerraform"
+Get-AzADServicePrincipal -DisplayNameBeginsWith "nsviattseva"
 
 Get-AzSubscription
 
