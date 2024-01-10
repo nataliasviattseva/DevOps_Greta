@@ -1,0 +1,21 @@
+Connect-AzAccount
+
+$sp = New-AzADServicePrincipal -DisplayName "service_principal_name" -Role "Contributor"
+
+Get-AzADServicePrincipal -DisplayNameBeginsWith "srvAzTerraform"
+
+Get-AzSubscription
+
+$sp.AppId
+
+$sp.PasswordCredentials.SecretText
+
+terraform init
+
+terraform plan
+
+terraform apply
+
+terraform destroy
+
+Remove-AzADServicePrincipal -DisplayName "srvAzTerraform"
