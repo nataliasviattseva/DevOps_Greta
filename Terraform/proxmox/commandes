@@ -1,0 +1,41 @@
+Proxmox:
+
+pveum role add TerraformProv -privs "Datastore.Allocate Datastore.AllocateSpace Datastore.Audit Pool.Allocate Sys.Audit Sys.Console Sys.Modify VM.Allocate VM.Audit VM.Clone VM.Config.CDROM VM.Config.Cloudinit VM.Config.CPU VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Console VM.Migrate VM.Monitor VM.PowerMgmt SDN.Use"
+
+pveum user add nsviattseva@pve --password nsviattseva
+
+pveum aclmod / -user nsviattseva@pve -role TerraformProv
+
+pveum user token add nsviattseva@pve terraform -expire 0 -privsep 0 -comment "Terraform token"
+
+apt-get install sudo
+apt-get install libguestfs-tools
+
+cd /var/lib/vz/template/iso
+wget https://cloud-images.ubuntu.com/releases/20.04/release/ubuntu-20.04-server-cloudimg-amd64.img
+sudo virt-customize -a ubuntu-20.04-server-cloudimg-amd64.img --install qemu-guest-agent
+sudo virt-customize -a ubuntu-20.04-server-cloudimg-amd64.img --root-password password:pp
+sudo qm create 8888 --name "ubuntu.ns.local" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+sudo sudo qm importdisk 8888 ubuntu-20.04-server-cloudimg-amd64.img local
+qm set 8888 --tags "template,test"
+sudo qm set 8888 --scsihw virtio-scsi-pci --scsi0 local:8888/vm-8888-disk-0.raw
+sudo qm set 8888 --boot c --bootdisk scsi0
+sudo qm set 8888 --ide2 local:cloudinit
+sudo qm set 8888 --serial0 socket --vga serial0
+sudo qm set 8888 --agent enabled=1
+sudo qm set 8888 --ipconfig0 ip=dhcp
+sudo qm template 8888
+
+eval $(ssh-agent)
+ssh-add ~/.ssh/id_rsa
+ssh root@192.168.27.108
+
+
+
+Client:
+
+$env:TF_VAR_api_token = "terraform-prov@pve!terraform=159ae6b8-8d5e-4be0-af1f-7490b70989e"
+export TF_VAR_api_token="terraform-prov@pve\!terraform=159ae6b8-8d5e-4be0-af1f-7490b70989e"
+
+
+
