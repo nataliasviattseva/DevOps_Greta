@@ -1,0 +1,15 @@
+#cloud-config
+hostname: ${hostname}
+local-hostname: ${hostname}
+fqdn: ${hostname}.${domain}
+manage_etc_hosts: true
+package_upgrade: true
+users:
+  - default
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCepHgMKZAqwxl9CBJ3f0wHhlH++suncnlHOK8647Runx/safTmGw3B040Pt/b5spNSx1jAM6qDsAuRmKwrFJ9PDQLOdzlrARq0ocguiC71CrlaOjwpVrmk5385AsZTzeO6p/3DMB6x5idf7pWzkMeN770s2EMTI0QLawGyoABwkMB66BaNWDmjEKgCAkxcXesxKe5MmjPeS9fYeTiFkNbh6e/QFNI6L0cB/iHsqtI8Pw5chaJFHHTvKkQmbzkGgIO5eR1ihc+dICfsgufK7e5PZ+yEPj+lVqLVbtok9kSCQsbaaPSSQuLl6F1PohXwTnVMRL9zopf97mQFCzpCd9zyvQPlAW2reGY5AiNyt4NdfQgSOcBs5g+rcovVE4oJJV4tL7/qwhDK2cLm7YggwCjprqIz5axMPpDEn4Zof7HsQNVXghTuaCoGSnLbs90RGEz3y79BMXObreC8PJN2b4DPQmhfs9UxiVLg9mYywoOBXHszH+0Rm7755unBJtD0PBU= root@debian
+
+ssh_pwauth: True ## This line enables ssh password authentication
+
