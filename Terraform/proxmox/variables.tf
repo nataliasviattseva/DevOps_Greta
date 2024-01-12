@@ -37,13 +37,13 @@ variable "domain" {
 variable "vm_tags" {
   description = "VM tags"
   type        = list(string)
-  default     = ["ubuntu"]
+  default     = ["ubuntu2204"]
 }
 
 variable "template_tag" {
   description = "Template tag"
   type        = string
-  default     = "test"
+  default     = "ubuntu2204"
 }
 
 variable "sockets" {
