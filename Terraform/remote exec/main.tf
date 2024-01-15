@@ -11,7 +11,7 @@ resource "null_resource" "docker" {
     type        = "ssh"
     host        = "10.0.10.70"
     user        = "vagrant"
-    private_key = file("/home/dteixeira/.ssh/id_rsa")
+    private_key = file("/home/nsviattseva/.ssh/id_rsa")
   }
 
   // Exécution des commandes sur la machine distante
