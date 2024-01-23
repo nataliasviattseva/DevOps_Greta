@@ -1,0 +1,14 @@
+network:
+  renderer: networkd
+  ethernets:
+    ens33:
+      addresses:
+        - 192.168.27.180/24
+      nameservers:
+        addresses: [1.1.1.1,8.8.8.8]
+      routes:
+        - to: default
+          via: 192.168.27.254
+      dhcp4: false
+  version: 2
+
