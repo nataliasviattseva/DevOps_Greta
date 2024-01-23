@@ -1,0 +1,83 @@
+------------------Déploiement du service web
+
+
+mkdir nginx && cd nginx
+
+nano nginx-deployment.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+
+#préparer le déploiement pour les nodes (manifeste du déploiement)
+kubectl create -f nginx-deployment.yaml
+
+#vérifie les déploiement
+kubectl get deployments
+
+#vérifie mieux
+kubectl describe deployment nginx-deployment
+
+#inspecte les pods
+kubectl get pods
+
+#affiche les détails des pods
+kubectl describe pods nginx-deployment-votre-id
+
+#création du service nginx
+nano nginx-service.yaml
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    run: nginx-service
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx
+    
+#création du service
+kubectl create -f nginx-service.yaml
+
+#vérifie le déploiement du service
+kubectl get service
+
+#Vérifie en détails le service
+kubectl describe service nginx-service
+
+-------------GUI
+
+docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
+
+
+#Déployer l'agent kubernetes
+kubectl apply -f https://downloads.portainer.io/ce2-19/portainer-agent-k8s-nodeport.yaml
+
+
+#Vérifier le déploiement de l'agent
+kubectl get pods --namespace=portainer -o wide
