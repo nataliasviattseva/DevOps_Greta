@@ -81,3 +81,8 @@ kubectl apply -f https://downloads.portainer.io/ce2-19/portainer-agent-k8s-nodep
 
 #Vérifier le déploiement de l'agent
 kubectl get pods --namespace=portainer -o wide
+
+
+https://192.168.27.180:9443
+
+Environment address: 192.168.27.180:30778
