@@ -25,7 +25,8 @@ echo "----------------------------------------"
 # Create two directories /data and /etc/prometheus to configure the Prometheus
 echo "Creation two directories /data and /etc/prometheus..."
 sudo mkdir -p /data /etc/prometheus
-Now, enter into the prometheus package file that you have untar in the earlier step.
+
+# Now, enter into the prometheus package file that you have untar in the earlier step.
 cd prometheus-2.49.0-rc.1.linux-amd64/
 echo "Done"
 echo "----------------------------------------"
@@ -43,15 +44,14 @@ sudo mv consoles console_libraries/ prometheus.yml /etc/prometheus/
 echo "Done"
 echo "----------------------------------------"
 
-
-Provide the permissions to prometheus user
+# Provide the permissions to prometheus user
 echo "Providing the permissions to prometheus user..."
 sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
 echo "Done"
 echo "----------------------------------------"
 
 
-Check and validate the Prometheus
+# Check and validate the Prometheus
 echo "Checking and validating the Prometheus..."
 prometheus --version
 echo "Done"
@@ -97,7 +97,7 @@ echo "----------------------------------------"
 echo "Starting the Prometheus service..."
 sudo systemctl enable prometheus.service
 sudo systemctl start prometheus.service
-systemctl status prometheus.service
+#systemctl status prometheus.service
 echo "Done"
 echo "----------------------------------------"
 
@@ -120,27 +120,32 @@ echo "Done"
 echo "----------------------------------------"
 
 # Untar the node exporter package file and move the node_exporter directory to the /usr/local/bin directory
-echo "..."
+echo "Untar the node exporter package file..."
 tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
 sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/
 echo "Done"
 echo "----------------------------------------"
 
-Validate the version of the node exporter
-echo "..."
+# Validate the version of the node exporter
+echo "Validating the version of the node exporter..."
 node_exporter --version
 echo "Done"
 echo "----------------------------------------"
 
-Create the systemd configuration file for node exporter.
-echo "..."
+# Create the systemd configuration file for node exporter
+echo "Creating the systemd configuration file for node exporter..."
 sudo vim /etc/systemd/system/node_exporter.service
 echo "Done"
 echo "----------------------------------------"
 
-Copy the below configurations and paste them into the /etc/systemd/system/node_exporter.service file.
 
-[Unit]
+# Specify the path to the node_exporter.service file
+echo "Editing the file /etc/systemd/system/node_exporter.service..."
+
+node_exporter_file="/etc/systemd/system/prometheus.service"
+
+# Prometheus configuration
+node_exporter_config="[Unit]
 Description=Node Exporter
 Wants=network-online.target
 After=network-online.target
@@ -155,15 +160,20 @@ RestartSec=5s
 ExecStart=/usr/local/bin/node_exporter \
  - collector.logind
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target"
+
+# Edit the systemd configuration file
+echo "Editing the file $node_exporter_file..."
+sudo bash -c "echo '$node_exporter' > $node_exporter_file" 
 echo "Done"
 echo "----------------------------------------"
 
-Enable the node exporter systemd configuration file and start it.
-echo "..."
+
+# Enable the node exporter systemd configuration file and start it.
+echo "Enabling the node exporter systemd configuration file and start it..."
 sudo systemctl enable node_exporter
 sudo systemctl enable node_exporter
-systemctl status node_exporter.service
+# systemctl status node_exporter.service
 echo "Done"
 echo "----------------------------------------"
 
@@ -200,7 +210,7 @@ echo "----------------------------------------"
 
 # Install the Grafana
 echo "Installing the Grafana..."
-sudo apt-get install grafana
+sudo apt-get install -y grafana
 echo "Done"
 echo "----------------------------------------"
 
@@ -208,6 +218,6 @@ echo "----------------------------------------"
 echo "Starting the Grafana Service..."
 sudo systemctl enable grafana-server.service
 sudo systemctl start grafana-server.service
-sudo systemctl status grafana-server.service
+# sudo systemctl status grafana-server.service
 echo "Done"
 echo "----------------------------------------"
