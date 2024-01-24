@@ -11,3 +11,14 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update -y
 sudo apt-get install jenkins -y
+
+# Installing Docker
+sudo apt update
+sudo apt install docker.io -y
+sudo usermod -aG docker jenkins
+sudo usermod -aG docker ubuntu
+sudo systemctl restart docker
+sudo chmod 777 /var/run/docker.sock
+
+# Installing Sonarqube on Jenkins Server
+docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
