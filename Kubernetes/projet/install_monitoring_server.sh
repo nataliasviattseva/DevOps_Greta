@@ -1,9 +1,6 @@
 # Create Prometheus user
 echo "Creation Prometheus user..."
-sudo useradd \
- - system \
- - no-create-home \
- - shell /bin/false prometheus
+sudo useradd --system --no-create-home --shell /bin/false prometheus
 echo "Done"
 echo "----------------------------------------"
 
@@ -38,7 +35,7 @@ echo "Done"
 echo "----------------------------------------"
 
 
-Move the console and console_libraries and prometheus.yml in the /etc/prometheus
+# Move the console and console_libraries and prometheus.yml in the /etc/prometheus
 echo "Moving the console and console_libraries and prometheus.yml in the /etc/prometheus..."
 sudo mv consoles console_libraries/ prometheus.yml /etc/prometheus/
 echo "Done"
@@ -59,12 +56,8 @@ echo "----------------------------------------"
 
 
 # Specify the path to the systemd configuration file
-echo "Editing the file /etc/systemd/system/prometheus.service..."
-
-systemd_config_file="/etc/systemd/system/prometheus.service"
-
-# Prometheus configuration
-prometheus_config="[Unit]
+cat <<EOF | sudo tee /etc/systemd/system/prometheus.service
+[Unit]
 Description=Prometheus
 Wants=network-online.target
 After=network-online.target
@@ -77,18 +70,15 @@ Type=simple
 Restart=on-failure
 RestartSec=5s
 ExecStart=/usr/local/bin/prometheus \
- -config.file=/etc/prometheus/prometheus.yml \
- -storage.tsdb.path=/data \
- -web.console.templates=/etc/prometheus/consoles \
- -web.console.libraries=/etc/prometheus/console_libraries \
- -web.listen-address=0.0.0.0:9090 \
- -web.enable-lifecycle
+ --config.file=/etc/prometheus/prometheus.yml \
+ --storage.tsdb.path=/data \
+ --web.console.templates=/etc/prometheus/consoles \
+ --web.console.libraries=/etc/prometheus/console_libraries \
+ --web.listen-address=0.0.0.0:9090 \
+ --web.enable-lifecycle
 [Install]
-WantedBy=multi-user.target"
-
-# Edit the systemd configuration file
-echo "Editing the file $systemd_config_file..."
-sudo bash -c "echo '$prometheus_config' > $systemd_config_file"
+WantedBy=multi-user.target
+EOF
 echo "Done"
 echo "----------------------------------------"
 
@@ -105,10 +95,7 @@ echo "----------------------------------------"
 # Now, we have to install a node exporter to visualize the machine or hardware level data such as CPU, RAM, etc on our Grafana dashboard.
 # To do that, we have to create a user for it.
 echo "Creating node exporter user..."
-sudo useradd \
- - system \
- - no-create-home \
- - shell /bin/false node_exporter
+sudo useradd --system --no-create-home --shell /bin/false node_exporter
 echo "Done"
 echo "----------------------------------------"
 
@@ -134,18 +121,8 @@ echo "----------------------------------------"
 
 # Create the systemd configuration file for node exporter
 echo "Creating the systemd configuration file for node exporter..."
-sudo vim /etc/systemd/system/node_exporter.service
-echo "Done"
-echo "----------------------------------------"
-
-
-# Specify the path to the node_exporter.service file
-echo "Editing the file /etc/systemd/system/node_exporter.service..."
-
-node_exporter_file="/etc/systemd/system/prometheus.service"
-
-# Prometheus configuration
-node_exporter_config="[Unit]
+cat <<EOF | /etc/systemd/system/node_exporter.service
+[Unit]
 Description=Node Exporter
 Wants=network-online.target
 After=network-online.target
@@ -157,14 +134,10 @@ Group=node_exporter
 Type=simple
 Restart=on-failure
 RestartSec=5s
-ExecStart=/usr/local/bin/node_exporter \
- - collector.logind
+ExecStart=/usr/local/bin/node_exporter --collector.logind
 [Install]
-WantedBy=multi-user.target"
-
-# Edit the systemd configuration file
-echo "Editing the file $node_exporter_file..."
-sudo bash -c "echo '$node_exporter' > $node_exporter_file" 
+WantedBy=multi-user.target
+EOF
 echo "Done"
 echo "----------------------------------------"
 
@@ -209,6 +182,7 @@ echo "Done"
 echo "----------------------------------------"
 
 # Install the Grafana
+# does not work - I used instruction from here https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
 echo "Installing the Grafana..."
 sudo apt-get install -y grafana
 echo "Done"
