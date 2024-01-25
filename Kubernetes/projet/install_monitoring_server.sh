@@ -124,17 +124,12 @@ echo "Creating the systemd configuration file for node exporter..."
 cat <<EOF | /etc/systemd/system/node_exporter.service
 [Unit]
 Description=Node Exporter
-Wants=network-online.target
-After=network-online.target
-StartLimitIntervalSec=500
-StartLimitBurst=5
+After=network.target
 [Service]
 User=node_exporter
 Group=node_exporter
 Type=simple
-Restart=on-failure
-RestartSec=5s
-ExecStart=/usr/local/bin/node_exporter --collector.logind
+ExecStart=/usr/local/bin/node_exporter
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -195,3 +190,16 @@ sudo systemctl start grafana-server.service
 # sudo systemctl status grafana-server.service
 echo "Done"
 echo "----------------------------------------"
+
+
+# Now, we have to add a jenkins to our Prometheus target section.
+echo 'Editing the /etc/prometheus/prometheus.yml file...'
+echo '  - job_name: "jenkins"' | sudo tee -a /etc/prometheus/prometheus.yml
+echo '    metrics_path: "/prometheus/"' | sudo tee -a /etc/prometheus/prometheus.yml
+echo '    static_configs:' | sudo tee -a /etc/prometheus/prometheus.yml
+echo '      - targets: ["192.168.27.180:9100"]' | sudo tee -a /etc/prometheus/prometheus.yml
+echo "Done"
+echo "----------------------------------------"
+
+
+
