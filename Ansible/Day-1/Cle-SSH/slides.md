@@ -132,3 +132,10 @@ Host * !monhost*
 ```
 ssh -F /dev/null pmerle@monhost
 ```
+
+
+
+
+nano /etc/ssh/sshd_config
+PermitRootLogin yes
+PubkeyAuthentication yes
