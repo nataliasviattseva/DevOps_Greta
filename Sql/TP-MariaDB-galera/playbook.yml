@@ -1,0 +1,87 @@
+---
+- hosts: maria_db_servers
+  # vars:
+    # ip:
+      # - "192.168.240.151"
+      # - "192.168.240.152"
+    # hostname:
+      # - "sql1"
+      # - "sql2"
+  become: true
+
+  tasks:
+
+  - name: Update apt-get repo and cache
+    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600 
+
+  - name: Remove a file galera.cnf, if present
+    file:
+      path: /etc/mysql/conf.d/galera.cnf
+      state: absent   
+
+  - name: Install MariaDB
+    apt:
+      name: mariadb-server
+      state: present
+
+  - name: Start MariaDB
+    service:
+      name: mariadb
+      state: started
+
+  - name: Secure mariadb
+    become: yes
+    expect:
+      command: mysql_secure_installation
+      responses:
+        'Enter current password for root': ''
+        'Set root password': 'n'
+        'Remove anonymous users': 'y'
+        'Disallow root login remotely': 'y'
+        'Remove test database': 'y'
+        'Reload privilege tables now': 'y'
+      timeout: 1
+    register: secure_mariadb
+    failed_when: "'... Failed!' in secure_mariadb.stdout_lines"
+
+  - name: Creating file galera.cnf sur 1 node
+    template:
+      src: "template_galera"
+      dest: "/etc/mysql/conf.d/galera.cnf"
+    vars:
+      - ip: "192.168.240.151"
+      - hostname: "sql1"
+    delegate_to: "192.168.240.151"
+
+  - name: Creating file galera.cnf sur 2 node
+    template:
+      src: "template_galera"
+      dest: "/etc/mysql/conf.d/galera.cnf"
+    vars:
+      - ip: "192.168.240.152"
+      - hostname: "sql2"
+    delegate_to: "192.168.240.152"
+
+  - name: Stop MariaDB
+    service:
+      name: mariadb
+      state: stopped
+
+  - name: Bootstrap first MariaDB Galera cluster node
+    command: galera_new_cluster
+    delegate_to: "192.168.240.151"
+
+  - name: Start MariaDB second node
+    service:
+      name: mariadb
+      state: started
+      delegate_to: "192.168.240.152"
+
+
+  # - name: Restart the other MariaDB Galera cluster nodes
+  #   service: name=mariadb state=restarted
+  #   when: inventory_hostname != groups['maria_db_servers'][1]
+
+
+
+
