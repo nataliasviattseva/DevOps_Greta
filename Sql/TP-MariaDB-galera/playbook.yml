@@ -1,12 +1,12 @@
 ---
 - hosts: maria_db_servers
-  # vars:
-    # ip:
-      # - "192.168.240.151"
-      # - "192.168.240.152"
-    # hostname:
-      # - "sql1"
-      # - "sql2"
+  vars:
+    ip:
+      - "192.168.240.151"
+      - "192.168.240.152"
+    hostname:
+      - "sql1"
+      - "sql2"
   become: true
 
   tasks:
@@ -62,26 +62,25 @@
       - hostname: "sql2"
     delegate_to: "192.168.240.152"
 
+  - name: Set admin rights to galera.cnf
+    command: "chmod 0444 /etc/mysql/conf.d"
+
   - name: Stop MariaDB
     service:
       name: mariadb
       state: stopped
 
   - name: Bootstrap first MariaDB Galera cluster node
-    command: galera_new_cluster
-    delegate_to: "192.168.240.151"
+    command: "galera_new_cluster"
+    when: inventory_hostname == groups['maria_db_servers'][0]
 
   - name: Start MariaDB second node
     service:
       name: mariadb
       state: started
-      delegate_to: "192.168.240.152"
+    when: inventory_hostname != groups['maria_db_servers'][0]
 
 
   # - name: Restart the other MariaDB Galera cluster nodes
   #   service: name=mariadb state=restarted
   #   when: inventory_hostname != groups['maria_db_servers'][1]
-
-
-
-
