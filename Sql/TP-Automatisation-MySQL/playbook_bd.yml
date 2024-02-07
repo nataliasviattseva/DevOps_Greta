@@ -1,0 +1,48 @@
+---
+- hosts: sql1
+  vars:
+    ip:
+      - "192.168.240.151"
+      - "192.168.240.152"
+    # hostname:
+      # - "sql1"
+      # - "sql2"
+    mysql_root_password: "pp"
+  become: true
+
+  tasks:
+
+  - name: Install pip
+    apt:
+      name: python3-pip
+      state: present
+
+  - name: Install the Python MySQL client library
+    pip:
+      name: PyMySQL
+      state: present
+
+  - name: Create a new database
+    mysql_db:
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      name: "galera_cluster_db"
+      # login_user: root
+      # login_password: "{{ mysql_root_password }}"
+      state: present
+
+  - name: Add sample data to database  
+    copy:
+      src: dump.sql
+      dest: /tmp/dump.sql  
+
+  - name: Insert sample data into database  
+    mysql_db:
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      name: "galera_cluster_db"
+      state: import
+      target: /tmp/dump.sql
+      # login_user: root
+      login_password: "{{ mysql_root_password }}"
+
+
+
