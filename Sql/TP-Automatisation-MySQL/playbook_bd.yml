@@ -1,12 +1,6 @@
 ---
 - hosts: sql1
   vars:
-    ip:
-      - "192.168.240.151"
-      - "192.168.240.152"
-    # hostname:
-      # - "sql1"
-      # - "sql2"
     mysql_root_password: "pp"
   become: true
 
@@ -26,8 +20,8 @@
     mysql_db:
       login_unix_socket: /var/run/mysqld/mysqld.sock
       name: "galera_cluster_db"
-      # login_user: root
-      # login_password: "{{ mysql_root_password }}"
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
       state: present
 
   - name: Add sample data to database  
@@ -39,10 +33,8 @@
     mysql_db:
       login_unix_socket: /var/run/mysqld/mysqld.sock
       name: "galera_cluster_db"
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
       state: import
       target: /tmp/dump.sql
-      # login_user: root
       login_password: "{{ mysql_root_password }}"
-
-
-
