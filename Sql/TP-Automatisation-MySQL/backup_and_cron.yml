@@ -1,0 +1,43 @@
+---
+- name: Prepare Backup server
+  hosts: backup_server
+  tasks:
+    - name: Update all packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+      delegate_to: 192.168.240.153
+
+    - name: Install MariaDB
+      apt:
+        name: mariadb-server
+        state: present
+      delegate_to: 192.168.240.153
+
+
+- name: Backup Galera Cluster DB and Configure Cron Job
+  hosts: maria_db_servers
+  tasks:
+    - name: Create backup directory if not exists on the backup server
+      file:
+        path: /etc/SAVE
+        state: directory
+      delegate_to: 192.168.240.153
+    - name: Copy backup script to the backup server
+      copy:
+        src: backup_script.sh
+        dest: /etc/SAVE/backup_script.sh
+      delegate_to: 192.168.240.153
+
+- name: Configure cron job on the backup server
+  hosts: backup_server
+  tasks:
+    - name: Add cron job to execute backup script every 5 minutes
+      ansible.builtin.cron:
+        name: "Backup Galera Cluster DB"
+        job: "/etc/SAVE/backup_script.sh"
+        minute: '*/5'
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
