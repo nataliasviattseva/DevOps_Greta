@@ -1,29 +1,26 @@
--- DELETE FROM Utilisateurs IF EXISTS;
--- DELETE FROM Connexions IF EXISTS;
+DELETE FROM Utilisateurs;
+DELETE FROM Connexions;
 
 CREATE TABLE IF NOT EXISTS Utilisateurs (           
-  id serial primary key NOT NULL,
-  Nom (VARCHAR),
-  Email (VARCHAR),
-  "Date inscription" (DATE),
-  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;     
+  id INT AUTO_INCREMENT NOT NULL,
+  Nom VARCHAR(255),
+  Email VARCHAR(255),
+  Date_inscription DATE,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;     
 
-INSERT INTO Utilisateurs(Nom, Email, "Date inscription") VALUES('Yann', 'yann@hotmail.com', '05/02/24');
-
-INSERT INTO Utilisateurs(Nom, Email, "Date inscription") VALUES('David', 'david@hotmail.com', '06/02/24');
-
-INSERT INTO Utilisateurs(Nom, Email, "Date inscription") VALUES('Dorian', 'dorian@hotmail.com', '07/02/24');
-
+INSERT INTO Utilisateurs(Nom, Email, Date_inscription) VALUES('Yann', 'yann@hotmail.com', '2024-02-05');
+INSERT INTO Utilisateurs(Nom, Email, Date_inscription) VALUES('David', 'david@hotmail.com', '2024-02-06');
+INSERT INTO Utilisateurs(Nom, Email, Date_inscription) VALUES('Dorian', 'dorian@hotmail.com', '2024-02-07');
 
 CREATE TABLE IF NOT EXISTS Connexions (           
-  Connexion_id serial primary key NOT NULL,
-  FOREIGN KEY Utilisateur_id REFERENCES Utilisateurs(id),
-  Timestamp  (TIMESTAMP),
-  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;     
+  Connexion_id INT AUTO_INCREMENT NOT NULL,
+  Utilisateur_id INT,
+  Timestamp TIMESTAMP,
+  PRIMARY KEY (Connexion_id),
+  FOREIGN KEY (Utilisateur_id) REFERENCES Utilisateurs(id)
+) ENGINE=InnoDB;
 
-INSERT INTO Connexions(Utilisateur_id, Timestamp) VALUES((SELECT id from Utilisateurs WHERE Nom='Yann'), TIMESTAMP(NOW()));
-
-INSERT INTO Connexions(Utilisateur_id, Timestamp) VALUES((SELECT id from Utilisateurs WHERE Nom='David'), TIMESTAMP(NOW()));
-
-INSERT INTO Connexions(Utilisateur_id, Timestamp) VALUES((SELECT id from Utilisateurs WHERE Nom='Dorian'), TIMESTAMP(NOW()));
-
+INSERT INTO Connexions(Utilisateur_id, `Timestamp`) VALUES((SELECT id from Utilisateurs WHERE Nom='Yann'), NOW());
+INSERT INTO Connexions(Utilisateur_id, `Timestamp`) VALUES((SELECT id from Utilisateurs WHERE Nom='David'), NOW());
+INSERT INTO Connexions(Utilisateur_id, `Timestamp`) VALUES((SELECT id from Utilisateurs WHERE Nom='Dorian'), NOW());
