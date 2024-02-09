@@ -1,6 +1,3 @@
-DELETE FROM Utilisateurs;
-DELETE FROM Connexions;
-
 CREATE TABLE IF NOT EXISTS Utilisateurs (           
   id INT AUTO_INCREMENT NOT NULL,
   Nom VARCHAR(255),
