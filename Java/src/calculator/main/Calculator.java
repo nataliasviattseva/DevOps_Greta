@@ -15,11 +15,8 @@ public class Calculator {
     }
 
     public int division(int a, int b) {
-        try {
-            return a / b;
-        }
-        catch(Exception IllegalArgumentException) {
-            System.out.println("Division by zero is not allowed");
+        if (b == 0) {
+            throw new IllegalArgumentException("Division by zero is not allowed");
         }
         return a / b;
     }

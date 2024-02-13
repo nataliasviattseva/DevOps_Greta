@@ -37,7 +37,7 @@ public class CalculatorJUnitTest {
     @Test
     public void testDivisionZero() {
         ExpectedException thrown= ExpectedException.none();
-        thrown.expect(ArithmeticException.class);
+        thrown.expect(IllegalArgumentException.class);
 //        assertEquals(calc.division(18, 0), null);
         System.out.println("Check division passed!");
     }

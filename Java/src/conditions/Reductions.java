@@ -4,10 +4,9 @@ import java.util.Scanner;
 
 public class Reductions {
     public static void main(String[] args) {
-        int prix;
         Scanner sc = new Scanner(System.in);
         System.out.println("La saisie du montant de l'achat ?");
-        prix = sc.nextInt();
+        double prix = sc.nextInt();
 
         if (prix >= 600) {
             prix *= 0.95;
