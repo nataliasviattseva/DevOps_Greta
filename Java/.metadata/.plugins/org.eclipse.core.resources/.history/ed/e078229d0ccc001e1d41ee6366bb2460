@@ -1,0 +1,24 @@
+package compteur;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class CompteurTest {
+
+	@Test
+	void testIncremente() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testDecremente() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testGetValue() {
+		fail("Not yet implemented");
+	}
+
+}

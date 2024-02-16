@@ -1,0 +1,47 @@
+package compteur;
+
+import java.util.Scanner;
+import java.util.Random;
+
+public class Chifoumi {
+	private Random randomGenerator = new Random();
+	private int choixJoueur;
+	private int choixMachine;
+	Scanner sc;
+	String list[] = { "Caillou", "Papier", "Ciseaux" };
+
+	public Chifoumi() {
+		sc = new Scanner(System.in);
+	}
+
+	public void getChoixMachine() {
+		choixMachine = randomGenerator.nextInt(list.length);
+		afficheChoix();
+	}
+
+	public void getChoixJoueur() {
+		System.out.print("Taper votre choix : ");
+		choixJoueur = sc.nextInt();
+
+	}
+
+	public void afficheChoix() {
+		System.out.println("Choix de Machine : " + list[choixMachine]);
+	}
+
+	public void resultatJeu() {
+		if (choixMachine == choixJoueur) {
+			System.out.println("Egalité");
+		} else if ((choixMachine == 0 && choixJoueur == 1) || (choixMachine == 1 && choixJoueur == 2) || (choixMachine == 2 && choixJoueur == 0)) {
+			System.out.println("Win");
+		} else {
+			System.out.println("Perdu");
+		}
+
+	}
+
+	public static void main(String argv[]) {
+		Chifoumi ch = new Chifoumi();
+		ch.resultatJeu();
+	}
+}

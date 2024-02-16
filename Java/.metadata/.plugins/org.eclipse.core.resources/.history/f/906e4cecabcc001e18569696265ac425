@@ -1,0 +1,34 @@
+package compteur;
+
+import java.util.Scanner;
+import java.util.Random;
+
+public class Chifoumi {
+	private Random randomGenerator = new Random();
+	private int choixJoueur;
+	private int choixMachine;
+	Scanner sc;
+	String list[] = {"Caillou", "Papier", "Ciseaux"};
+
+	public Chifoumi() {
+		sc = new Scanner(System.in);
+		getChoixMachine();
+	}
+
+	public void getChoixMachine() {
+		choixMachine = randomGenerator.nextInt(list.length);
+		System.out.print(list[choixMachine]);
+	}
+
+	public void getChoixJoueur() {
+
+	}
+
+	public void afficheChoix() {
+
+	}
+
+	public void resultatJeu() {
+
+	}
+}

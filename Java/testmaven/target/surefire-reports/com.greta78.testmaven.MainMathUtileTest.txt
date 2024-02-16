@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.greta78.testmaven.MainMathUtileTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.024 s <<< FAILURE! - in com.greta78.testmaven.MainMathUtileTest
+test  Time elapsed: 0.018 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Not yet implemented
+	at com.greta78.testmaven.MainMathUtileTest.test(MainMathUtileTest.java:11)
+

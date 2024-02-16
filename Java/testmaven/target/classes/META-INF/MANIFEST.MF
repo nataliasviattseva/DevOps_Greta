@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Built-By: stagiaire
+Build-Jdk: 17.0.9
+Main-Class: com.greta78.testmaven.MainMathUtile
+Created-By: Maven Integration for Eclipse
+
