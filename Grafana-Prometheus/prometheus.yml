@@ -1,0 +1,39 @@
+# /etc/prometheus/prometheus.yml
+
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+      monitor: 'codelab-monitor'
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets: ['localhost:9093']
+
+rule_files:
+scrape_configs:
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['192.168.240.150:9090']
+
+  - job_name: 'haproxy'
+    static_configs:
+      - targets: ['192.168.240.151:9101']
+
+  - job_name: nginx1
+    static_configs:
+      - targets: ['192.168.240.152:9113']
+
+  - job_name: nginx2
+    static_configs:
+      - targets: ['192.168.240.153:9113']
+
+  - job_name: postgres1
+    static_configs:
+      - targets: ['192.168.240.152:9187']
+
+  - job_name: postgres2
+    static_configs:
+      - targets: ['192.168.240.153:9187']
